@@ -9,6 +9,19 @@ import org.junit.Test
 
 class WeatherParserTest {
     @Test
+    fun missingDailyRainChanceDoesNotDiscardCurrentAndHourlyForecasts() {
+        val complete = WeatherParser.parseForecast(VALID_FORECAST, 123L)
+        val root = JSONObject(VALID_FORECAST)
+        root.getJSONObject("daily").getJSONArray("precipitation_probability_max").put(0, JSONObject.NULL)
+        val parsed = WeatherParser.parseForecast(root.toString(), 123L)
+        assertEquals(complete.current, parsed.current)
+        assertEquals(complete.hourly, parsed.hourly)
+        assertEquals(1, parsed.daily.size)
+        assertEquals(complete.daily.single().precipitationSum, parsed.daily.single().precipitationSum, 0.0)
+        assertEquals(null, parsed.daily.single().precipitationProbability)
+    }
+
+    @Test
     fun preservesHourlyTotalCloudCoverWithoutInventingMissingValues() {
         val root = JSONObject(VALID_FORECAST)
         root.getJSONObject("hourly").put("cloud_cover", JSONArray().put(85).put(JSONObject.NULL))

@@ -101,6 +101,7 @@ class ForecastDayTest {
         )
 
         assertEquals("70% · 1.2 mm", dailyPrecipitationSummary(rainyDay, units))
+        assertEquals("— · 1.2 mm", dailyPrecipitationSummary(rainyDay.copy(precipitationProbability = null), units))
     }
 
     @Test

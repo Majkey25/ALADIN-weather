@@ -917,7 +917,7 @@ private fun DaySummaryMetric(label: String, value: String, modifier: Modifier = 
 internal fun dailyPrecipitationSummary(
     day: DailyWeather,
     units: WeatherUnitFormatter,
-): String = "${day.precipitationProbability}% · ${units.precipitation(day.precipitationSum)}"
+): String = "${day.precipitationProbability?.let { "$it%" } ?: "—"} · ${units.precipitation(day.precipitationSum)}"
 
 @Composable
 private fun WeatherPanel(content: @Composable () -> Unit) {

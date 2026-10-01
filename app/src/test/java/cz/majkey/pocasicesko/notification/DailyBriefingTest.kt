@@ -11,6 +11,13 @@ import org.junit.Test
 
 class DailyBriefingTest {
     @Test
+    fun missingRainChanceStillUsesActualRainEvidence() {
+        assertTrue(dailyBriefingAdvice(day(rain = 0.3).copy(precipitationProbability = null)).umbrella)
+        assertTrue(dailyBriefingAdvice(day().copy(precipitationProbability = null, weatherCode = 51)).umbrella)
+        assertFalse(dailyBriefingAdvice(day().copy(precipitationProbability = null)).umbrella)
+    }
+
+    @Test
     fun doesNotRecommendNoUmbrellaForDrizzleOrTraceRain() {
         assertTrue(dailyBriefingAdvice(day().copy(weatherCode = 51)).umbrella)
         assertTrue(dailyBriefingAdvice(day(rain = 0.03)).umbrella)

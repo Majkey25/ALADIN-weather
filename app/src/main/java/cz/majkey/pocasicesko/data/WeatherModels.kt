@@ -111,7 +111,7 @@ data class DailyWeather(
     val sunrise: String,
     val sunset: String,
     val precipitationSum: Double,
-    val precipitationProbability: Int,
+    val precipitationProbability: Int?,
     val windSpeedMax: Double,
     val apparentTemperatureMax: Double? = null,
     val apparentTemperatureMin: Double? = null,

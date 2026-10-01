@@ -312,7 +312,7 @@ internal fun WeatherDetailSheet(
                             )
                             OptionalDetailRow(
                                 stringResource(R.string.precipitation_probability),
-                                today?.let { "${it.precipitationProbability} %" },
+                                today?.precipitationProbability?.let { "$it %" },
                             )
                             OptionalDetailRow(
                                 stringResource(R.string.precipitation_hours),
