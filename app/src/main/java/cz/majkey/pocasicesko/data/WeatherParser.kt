@@ -176,8 +176,7 @@ object WeatherParser {
                     sunset = dailyJson.getJSONArray("sunset").requiredString(index, "sunset"),
                     precipitationSum = dailyJson.getJSONArray("precipitation_sum")
                         .requiredDouble(index, "precipitation_sum"),
-                    precipitationProbability = dailyJson.getJSONArray("precipitation_probability_max")
-                        .requiredInt(index, "precipitation_probability_max"),
+                    precipitationProbability = dailyJson.optionalIntAt("precipitation_probability_max", index),
                     windSpeedMax = dailyJson.getJSONArray("wind_speed_10m_max")
                         .requiredDouble(index, "wind_speed_10m_max"),
                     apparentTemperatureMax = dailyJson.optionalDoubleAt("apparent_temperature_max", index),

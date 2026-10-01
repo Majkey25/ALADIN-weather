@@ -32,4 +32,7 @@
     <string name="notification_heat_advice">Vers %1$s : %2$s prévus. Prenez de l’eau et cherchez de l’ombre.</string>
     <string name="notification_wind_advice">Vers %1$s : vent ou rafales proches de %2$s prévus. Fixez les objets mobiles.</string>
     <string name="notification_uv_advice">Vers %1$s : indice UV %2$d prévu. Utilisez une protection solaire.</string>
+    <string name="notification_background_delivery">Réception en arrière-plan</string>
+    <string name="notification_background_help">Les vérifications météo peuvent fonctionner avec l’application fermée. Android peut les retarder en veille ou en cas de restrictions de batterie. Autorisez l’activité en arrière-plan dans les réglages de batterie de l’application. Après un arrêt forcé, rouvrez l’application. Une heure précise de réception n’est pas garantie.</string>
+    <string name="notification_huawei_help">Huawei et Honor : ouvrez les paramètres de lancement dans les détails de consommation. Choisissez la gestion manuelle et autorisez le lancement automatique, le lancement secondaire et l’exécution en arrière-plan. Cela peut consommer davantage de batterie.</string>
 </resources>

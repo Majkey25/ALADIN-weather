@@ -1,5 +1,6 @@
 package cz.majkey.pocasicesko.ui
 
+import android.os.Build
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,6 +13,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Air
+import androidx.compose.material.icons.rounded.BatteryAlert
 import androidx.compose.material.icons.rounded.Schedule
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material.icons.rounded.Thermostat
@@ -61,6 +63,7 @@ enum class NotificationSettingsSection(val title: Int) {
     WIND(R.string.notification_wind),
     UV(R.string.notification_uv),
     TIMING(R.string.settings_alert_timing),
+    DELIVERY(R.string.notification_background_delivery),
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -74,6 +77,7 @@ fun NotificationSettingsSheet(
     onDailyBriefingChange: (Boolean) -> Unit,
     onRequestPermission: () -> Unit,
     onChannelSettings: (String) -> Unit,
+    onBackgroundSettings: () -> Unit,
     onDismiss: () -> Unit,
     blockedChannels: Set<String> = emptySet(),
     initialSection: NotificationSettingsSection = NotificationSettingsSection.GENERAL,
@@ -111,6 +115,11 @@ fun NotificationSettingsSheet(
                 }
                 when (section) {
                     NotificationSettingsSection.GENERAL -> {
+                        item {
+                            SettingsCategoryRow(R.string.notification_background_delivery, Icons.Rounded.BatteryAlert) {
+                                section = NotificationSettingsSection.DELIVERY
+                            }
+                        }
                         item {
                             NotificationToggle(
                                 title = stringResource(R.string.daily_briefing),
@@ -160,6 +169,18 @@ fun NotificationSettingsSheet(
                             Text(stringResource(R.string.notification_settings_summary),
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp))
+                        }
+                    }
+                    NotificationSettingsSection.DELIVERY -> item {
+                        Column(Modifier.fillMaxWidth().padding(horizontal = 20.dp)) {
+                            Text(stringResource(R.string.notification_background_help))
+                            if (Build.MANUFACTURER.equals("huawei", ignoreCase = true) ||
+                                Build.MANUFACTURER.equals("honor", ignoreCase = true)) {
+                                Text(stringResource(R.string.notification_huawei_help), Modifier.padding(top = 16.dp))
+                            }
+                            Button(onClick = onBackgroundSettings, modifier = Modifier.fillMaxWidth().padding(top = 16.dp)) {
+                                Text(stringResource(R.string.open_app_settings))
+                            }
                         }
                     }
                     NotificationSettingsSection.TIMING -> item {

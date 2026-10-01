@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.4.1] - 2026-10-01
+
+- Restore rain and official-warning background checks after reboot or app updates even when morning briefing is off.
+- Keep the valid forecast when a daily rain probability is missing. Show the missing probability as unavailable instead of zero, and avoid unsupported no-umbrella advice.
+- Add Background delivery guidance and a shortcut to Android app settings, including Huawei/Honor launch restrictions.
+
 ## [0.4.0] - 2026-09-24
 
 - Group settings into Notifications, Official warnings, Appearance, Units, Language, Widgets, and About. Keep thresholds in focused notification submenus and return to the parent menu with Back.

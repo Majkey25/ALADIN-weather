@@ -1,0 +1,1 @@
+Regen- und Warnmeldungen werden nach Neustart oder Update wieder im Hintergrund geprüft, auch ohne Morgenbericht. Fehlende Regenwahrscheinlichkeiten für spätere Tage verhindern die Prüfung nicht mehr. Fehlende Werte bleiben unbekannt und werden nicht als null Prozent angezeigt.

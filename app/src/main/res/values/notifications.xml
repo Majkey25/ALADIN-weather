@@ -32,4 +32,7 @@
     <string name="notification_heat_advice">Around %1$s: %2$s expected. Bring water and seek shade.</string>
     <string name="notification_wind_advice">Around %1$s: wind or gusts near %2$s expected. Secure loose items.</string>
     <string name="notification_uv_advice">Around %1$s: UV index %2$d expected. Use sun protection.</string>
+    <string name="notification_background_delivery">Background delivery</string>
+    <string name="notification_background_help">Weather checks can run with the app closed. Android may delay them during sleep or battery restrictions. Allow background activity in the app battery settings. After Force stop, reopen the app. Delivery is not guaranteed at an exact time.</string>
+    <string name="notification_huawei_help">Huawei and Honor: in Power usage details, open Launch settings. Choose manual management and allow Auto-launch, Secondary launch and Run in background. This may use more battery.</string>
 </resources>

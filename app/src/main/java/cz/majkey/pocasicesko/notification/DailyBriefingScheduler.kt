@@ -90,6 +90,8 @@ internal object DailyBriefingScheduler {
 
 class DailyBriefingReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
+        // Rain and warning checks do not depend on the optional morning briefing.
+        WeatherAlertScheduler.sync(context)
         if (!DailyBriefingScheduler.isEnabled(context)) return
         if (intent.action == DailyBriefingScheduler.ACTION_SHOW) {
             showBriefing(context)
@@ -137,7 +139,7 @@ class DailyBriefingReceiver : BroadcastReceiver() {
             context.getString(advice.outfit.resource()),
             context.getString(
                 if (advice.umbrella) R.string.daily_briefing_umbrella else R.string.daily_briefing_no_umbrella,
-            ),
+            ).takeIf { advice.umbrella || day.precipitationProbability != null },
             context.getString(R.string.daily_briefing_sun_protection).takeIf { advice.sunProtection },
         ).joinToString(" ")
         val openApp = PendingIntent.getActivity(

@@ -65,7 +65,7 @@ class ForecastLayoutTest {
                     dailyBriefingEnabled = false, notificationsAllowed = false,
                     onSettingsChange = { settings.value = it }, onDailyBriefingChange = {},
                     onRequestPermission = { permissionRequests++ },
-                    onChannelSettings = { openedChannel = it }, onDismiss = {},
+                    onChannelSettings = { openedChannel = it }, onBackgroundSettings = {}, onDismiss = {},
                     blockedChannels = setOf(WeatherAlertCategory.RAIN.channelId))
             }
         }

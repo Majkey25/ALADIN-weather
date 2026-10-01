@@ -1,0 +1,1 @@
+Las comprobaciones de lluvia y avisos se recuperan tras reiniciar o actualizar, incluso sin el resumen matinal. Se corrigió un error que bloqueaba las alertas cuando faltaba la probabilidad de lluvia de un día lejano. Los valores ausentes siguen siendo desconocidos, no cero.

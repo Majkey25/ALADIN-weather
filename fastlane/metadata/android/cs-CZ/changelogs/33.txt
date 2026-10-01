@@ -1,0 +1,1 @@
+Kontroly deště a výstrah na pozadí se obnoví po restartu nebo aktualizaci i při vypnutém ranním přehledu. Opravena chyba načítání předpovědi, která mohla zabránit upozorněním, pokud u vzdáleného dne chyběla pravděpodobnost srážek. Chybějící údaj zůstává neznámý, nikoli nulový.

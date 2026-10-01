@@ -32,7 +32,7 @@ internal fun dailyBriefingAdvice(day: DailyWeather): DailyBriefingAdvice {
     }
     return DailyBriefingAdvice(
         outfit = outfit,
-        umbrella = day.precipitationProbability >= 40 ||
+        umbrella = day.precipitationProbability?.let { it >= 40 } == true ||
             hasPrecipitationEvidence(day.weatherCode, day.precipitationSum, day.rainSum, day.snowfallSum),
         sunProtection = (day.uvIndexMax ?: 0.0) >= 6.0,
     )
