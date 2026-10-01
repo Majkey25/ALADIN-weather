@@ -32,4 +32,7 @@
     <string name="notification_heat_advice">Gegen %1$s werden %2$s erwartet. Wasser mitnehmen und Schatten suchen.</string>
     <string name="notification_wind_advice">Gegen %1$s werden Wind oder Böen um %2$s erwartet. Lose Gegenstände sichern.</string>
     <string name="notification_uv_advice">Gegen %1$s wird UV-Index %2$d erwartet. Sonnenschutz verwenden.</string>
+    <string name="notification_background_delivery">Zustellung im Hintergrund</string>
+    <string name="notification_background_help">Wetterprüfungen laufen auch bei geschlossener App. Android kann sie im Ruhezustand oder durch Akku-Beschränkungen verzögern. Erlauben Sie Hintergrundaktivität in den Akku-Einstellungen der App. Nach erzwungenem Beenden öffnen Sie die App erneut. Eine genaue Zustellzeit ist nicht garantiert.</string>
+    <string name="notification_huawei_help">Huawei und Honor: Öffnen Sie die Starteinstellungen unter den Details zum Stromverbrauch. Wählen Sie manuelle Verwaltung und erlauben Sie Auto-Start, sekundären Start und Ausführung im Hintergrund. Dies kann mehr Akku verbrauchen.</string>
 </resources>

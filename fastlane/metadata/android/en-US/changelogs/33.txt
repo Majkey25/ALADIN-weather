@@ -1,0 +1,1 @@
+Background rain and warning checks now recover after reboot or an app update even if morning briefing is off. Fixed a forecast parsing error that could prevent notification checks when a distant day had no rain probability. Missing probabilities remain unknown, not zero.

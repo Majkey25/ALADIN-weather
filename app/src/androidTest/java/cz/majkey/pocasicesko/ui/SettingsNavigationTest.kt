@@ -75,7 +75,7 @@ class SettingsNavigationTest {
                     settings.value, MeasurementSystem.METRIC,
                     dailyBriefingEnabled = false, notificationsAllowed = true,
                     onSettingsChange = { settings.value = it }, onDailyBriefingChange = {},
-                    onRequestPermission = {}, onChannelSettings = {}, onDismiss = { dismissals++ },
+                    onRequestPermission = {}, onChannelSettings = {}, onBackgroundSettings = {}, onDismiss = { dismissals++ },
                 )
             }
         }
@@ -97,5 +97,23 @@ class SettingsNavigationTest {
         compose.onNodeWithText(context.getString(R.string.settings_temperature_alerts)).performClick()
         compose.onNodeWithText(context.getString(R.string.notification_at_or_below, units.temperature(-5.0)))
             .assertIsDisplayed()
+    }
+
+    @Test
+    fun backgroundDeliveryHelpOpensAppSettingsOnlyOnRequest() {
+        var opened = 0
+        compose.setContent {
+            WeatherTheme {
+                NotificationSettingsSheet(WeatherAlertSettings(), MeasurementSystem.METRIC,
+                    dailyBriefingEnabled = false, notificationsAllowed = true,
+                    onSettingsChange = {}, onDailyBriefingChange = {}, onRequestPermission = {},
+                    onChannelSettings = {}, onBackgroundSettings = { opened++ }, onDismiss = {})
+            }
+        }
+        assertEquals(0, opened)
+        compose.onNodeWithText(context.getString(R.string.notification_background_delivery)).performClick()
+        compose.onNodeWithText(context.getString(R.string.notification_background_help)).assertIsDisplayed()
+        compose.onNodeWithText(context.getString(R.string.open_app_settings)).performScrollTo().performClick()
+        assertEquals(1, opened)
     }
 }

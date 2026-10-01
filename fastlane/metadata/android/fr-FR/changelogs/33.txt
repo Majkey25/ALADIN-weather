@@ -1,0 +1,1 @@
+Les vérifications de pluie et d’alertes reprennent après un redémarrage ou une mise à jour, même sans bulletin matinal. Une probabilité de pluie absente pour un jour lointain ne bloque plus les alertes. Les valeurs manquantes restent inconnues, et non égales à zéro.

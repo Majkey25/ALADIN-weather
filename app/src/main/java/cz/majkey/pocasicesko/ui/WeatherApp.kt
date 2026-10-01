@@ -489,6 +489,14 @@ fun WeatherApp(
                         } else openSystemNotifications()
                     },
                     onChannelSettings = ::openSystemNotifications,
+                    onBackgroundSettings = {
+                        try {
+                            context.startActivity(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                                Uri.parse("package:${context.packageName}")))
+                        } catch (_: ActivityNotFoundException) {
+                            Toast.makeText(context, supportUnavailable, Toast.LENGTH_LONG).show()
+                        }
+                    },
                     initialSection = notificationSection,
                     onDismiss = { showNotificationSettings = false; showSettings = true },
                 )

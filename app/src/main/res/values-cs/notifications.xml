@@ -32,4 +32,7 @@
     <string name="notification_heat_advice">Kolem %1$s se očekává %2$s. Vezměte si vodu a vyhledejte stín.</string>
     <string name="notification_wind_advice">Kolem %1$s se očekává vítr nebo nárazy okolo %2$s. Zajistěte volné předměty.</string>
     <string name="notification_uv_advice">Kolem %1$s se očekává UV index %2$d. Použijte ochranu před sluncem.</string>
+    <string name="notification_background_delivery">Doručování na pozadí</string>
+    <string name="notification_background_help">Kontroly počasí mohou běžet i při zavřené aplikaci. Android je může odložit při uspání nebo omezení baterie. V nastavení baterie aplikace povolte běh na pozadí. Po vynuceném zastavení aplikaci znovu otevřete. Přesný čas doručení není zaručen.</string>
+    <string name="notification_huawei_help">Huawei a Honor: v podrobnostech spotřeby otevřete nastavení spouštění. Zvolte ruční správu a povolte automatické spuštění, sekundární spuštění a běh na pozadí. Spotřeba baterie se může zvýšit.</string>
 </resources>

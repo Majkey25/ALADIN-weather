@@ -32,4 +32,7 @@
     <string name="notification_heat_advice">Hacia %1$s se esperan %2$s. Lleva agua y busca sombra.</string>
     <string name="notification_wind_advice">Hacia %1$s se esperan viento o rachas de unos %2$s. Asegura los objetos sueltos.</string>
     <string name="notification_uv_advice">Hacia %1$s se espera un índice UV de %2$d. Usa protección solar.</string>
+    <string name="notification_background_delivery">Avisos en segundo plano</string>
+    <string name="notification_background_help">El tiempo puede comprobarse con la app cerrada. Android puede retrasarlo durante el reposo o por restricciones de batería. Permite la actividad en segundo plano en los ajustes de batería de la app. Tras forzar su detención, vuelve a abrirla. No se garantiza una hora exacta de entrega.</string>
+    <string name="notification_huawei_help">Huawei y Honor: abre los ajustes de inicio en los detalles de consumo. Elige la gestión manual y permite el inicio automático, el inicio secundario y la ejecución en segundo plano. Esto puede consumir más batería.</string>
 </resources>

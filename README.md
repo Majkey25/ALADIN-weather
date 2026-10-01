@@ -65,6 +65,10 @@ The [research workflow](research/README.md) can freeze future forecasts and late
 
 The historical data was obtained from the NASA Langley Research Center POWER project funded through the NASA Earth Science Division. CSV exports include the POWER Daily API version and access time. Selia Weather is not an official NASA, ČHMÚ, or Open-Meteo app.
 
+## Background notifications
+
+Rain and warning checks use a persisted Android job, independently of the optional morning briefing. Closing the app normally does not require keeping its screen open. Android controls execution timing and can delay work during Doze or battery restrictions. After Force stop, reopen the app to resume work. Manufacturer-specific background restrictions may also need review in Android app/battery settings. See [Android background limits](https://developer.android.com/topic/performance/background-optimization).
+
 ## Language and requirements
 
 Selia Weather supports Android 10 and later. It follows the Android system language by default. English is the fallback for unsupported system languages. You can select English, Czech, German, Spanish, or French in the app.
