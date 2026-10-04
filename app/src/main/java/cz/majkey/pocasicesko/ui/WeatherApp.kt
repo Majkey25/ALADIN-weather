@@ -240,6 +240,8 @@ fun WeatherApp(
     var dailyBriefingEnabled by remember {
         mutableStateOf(DailyBriefingScheduler.isEnabled(context))
     }
+    var briefingTime by remember { mutableStateOf(DailyBriefingScheduler.time(context)) }
+    var exactAlarmsAllowed by remember { mutableStateOf(DailyBriefingScheduler.exactAlarmsAllowed(context)) }
     var state by remember { mutableStateOf<WeatherUiState>(WeatherUiState.Loading) }
     val latestState by rememberUpdatedState(state)
     var lastRefreshAttemptMillis by remember { mutableLongStateOf(0L) }
@@ -308,6 +310,8 @@ fun WeatherApp(
                 notificationChannelsVersion++
                 notificationsAllowed = WeatherAlertScheduler.notificationsAllowed(context)
                 WeatherAlertScheduler.sync(context)
+                exactAlarmsAllowed = DailyBriefingScheduler.exactAlarmsAllowed(context)
+                DailyBriefingScheduler.schedule(context)
                 widgetIds = AppWidgetManager.getInstance(context).getAppWidgetIds(
                     ComponentName(context, WeatherWidgetProvider::class.java),
                 ).sorted()
@@ -481,6 +485,19 @@ fun WeatherApp(
                         WeatherAlertScheduler.sync(context)
                     },
                     onDailyBriefingChange = ::setDailyBriefing,
+                    briefingTime = briefingTime,
+                    onBriefingTimeChange = { selected ->
+                        briefingTime = selected
+                        DailyBriefingScheduler.setTime(context, selected)
+                    },
+                    exactAlarmsAllowed = exactAlarmsAllowed,
+                    onRequestExactAlarms = {
+                        if (Build.VERSION.SDK_INT >= 31) {
+                            try { context.startActivity(Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM,
+                                Uri.parse("package:${context.packageName}"))) }
+                            catch (_: ActivityNotFoundException) { Toast.makeText(context, supportUnavailable, Toast.LENGTH_LONG).show() }
+                        }
+                    },
                     onRequestPermission = {
                         if (Build.VERSION.SDK_INT >= 33 && !requestedAlertsPermission &&
                             ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {

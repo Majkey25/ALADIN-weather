@@ -35,4 +35,12 @@
     <string name="notification_background_delivery">Background delivery</string>
     <string name="notification_background_help">Weather checks can run with the app closed. Android may delay them during sleep or battery restrictions. Allow background activity in the app battery settings. After Force stop, reopen the app. Delivery is not guaranteed at an exact time.</string>
     <string name="notification_huawei_help">Huawei and Honor: in Power usage details, open Launch settings. Choose manual management and allow Auto-launch, Secondary launch and Run in background. This may use more battery.</string>
+    <string name="notification_morning_at">Every day at %1$s</string>
+    <string name="notification_morning_summary">A forecast before work or school, with clothing and umbrella advice.</string>
+    <string name="notification_morning_expiry">Missed briefings expire after 30 minutes, so morning advice will not arrive hours later.</string>
+    <string name="notification_rain_lead">Notify up to %1$d h before rain</string>
+    <string name="notification_rain_probability">Rain chance threshold: %1$d%%</string>
+    <string name="notification_exact_help">Allow Alarms &amp; reminders in Android for delivery at your chosen time. Otherwise Android may delay alerts.</string>
+    <string name="notification_exact_enable">Allow timely alerts</string>
+    <string name="notification_exact_allowed">Alarms &amp; reminders allowed. Battery restrictions can still affect delivery.</string>
 </resources>

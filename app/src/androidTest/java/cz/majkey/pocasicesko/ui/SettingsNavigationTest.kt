@@ -30,6 +30,29 @@ class SettingsNavigationTest {
     private val context get() = instrumentation.targetContext
 
     @Test
+    fun rainLeadAndProbabilitySurviveBackWithoutChangingTemperatureAlerts() {
+        val settings = mutableStateOf(WeatherAlertSettings())
+        compose.setContent {
+            WeatherTheme {
+                NotificationSettingsSheet(settings.value, MeasurementSystem.METRIC,
+                    dailyBriefingEnabled = false, notificationsAllowed = true,
+                    onSettingsChange = { settings.value = it }, onDailyBriefingChange = {},
+                    onRequestPermission = {}, onChannelSettings = {}, onBackgroundSettings = {}, onDismiss = {})
+            }
+        }
+        compose.onNodeWithText(context.getString(R.string.notification_rain)).performScrollTo().performClick()
+        compose.onNodeWithContentDescription(context.getString(R.string.notification_rain_lead, 1))
+            .performScrollTo().performSemanticsAction(SemanticsActions.SetProgress) { it(2f) }
+        compose.onNodeWithContentDescription(context.getString(R.string.notification_rain_probability, 40))
+            .performScrollTo().performSemanticsAction(SemanticsActions.SetProgress) { it(60f) }
+        assertEquals(2, settings.value.rainLeadHours)
+        assertEquals(60, settings.value.rainProbabilityPercent)
+        assertEquals(6, settings.value.lookAheadHours)
+        instrumentation.sendKeyDownUpSync(KeyEvent.KEYCODE_BACK)
+        compose.onNodeWithText(context.getString(R.string.notification_rain_lead, 2)).assertIsDisplayed()
+    }
+
+    @Test
     fun unitsOpenInSubmenuAndSystemBackReturnsBeforeDismissing() {
         val selected = mutableStateOf(MeasurementSystem.METRIC)
         val visible = mutableStateOf(true)

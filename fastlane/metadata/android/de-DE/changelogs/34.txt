@@ -1,0 +1,1 @@
+Wählen Sie die Uhrzeit des Morgenberichts. Verpasste Berichte verfallen nach 30 Minuten. Stellen Sie Vorlaufzeit und Wahrscheinlichkeit für Regenmeldungen ein. Gespeicherte Regenvorhersagen werden über Android-Alarme geprüft. Ab Android 12 hilft die Berechtigung Wecker und Erinnerungen bei pünktlicher Zustellung. Akku-Beschränkungen können Meldungen weiterhin verzögern.

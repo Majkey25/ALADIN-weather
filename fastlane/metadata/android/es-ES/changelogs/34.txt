@@ -1,0 +1,1 @@
+Elige la hora del resumen matinal. Los resúmenes perdidos caducan a los 30 minutos. Configura la antelación y el umbral de probabilidad de los avisos de lluvia. Las previsiones guardadas se comprueban mediante alarmas de Android. En Android 12 o superior, permite Alarmas y recordatorios para avisos puntuales. Las restricciones de batería aún pueden retrasarlos.

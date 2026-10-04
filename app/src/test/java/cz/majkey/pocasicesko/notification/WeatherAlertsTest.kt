@@ -21,6 +21,34 @@ class WeatherAlertsTest {
     )
 
     @Test
+    fun defaultRainAdviceWaitsUntilAboutAnHourBeforeRain() {
+        val later = hour("2026-09-22T14:00").copy(precipitation = 1.0)
+        assertTrue(forecastAlerts(WeatherAlertSettings(), snapshot(listOf(later)), now).isEmpty())
+        val soon = later.copy(time = "2026-09-22T12:00")
+        assertEquals(WeatherAlertCategory.RAIN,
+            forecastAlerts(WeatherAlertSettings(), snapshot(listOf(soon)), now).single().category)
+    }
+
+    @Test
+    fun oneWetModelAloneDoesNotTriggerAnUmbrellaNotification() {
+        val weak = hour().copy(precipitationSpread = PrecipitationModelSpread(9, 1, 0.0, 0.2))
+        assertTrue(forecastAlerts(WeatherAlertSettings(), snapshot(listOf(weak)), now).isEmpty())
+    }
+
+    @Test
+    fun schedulesRainCheckAtChosenLeadTimeAndUsesConfiguredProbability() {
+        val later = hour("2026-09-22T14:00").copy(precipitationProbability = 50)
+        assertEquals(Instant.parse("2026-09-22T10:00:00Z").toEpochMilli(),
+            nextRainAlertTime(WeatherAlertSettings(), snapshot(listOf(later)), now))
+        assertEquals(null, nextRainAlertTime(WeatherAlertSettings(rainProbabilityPercent = 60), snapshot(listOf(later)), now))
+        assertEquals(null, nextRainAlertTime(WeatherAlertSettings(rainEnabled = false), snapshot(listOf(later)), now))
+        assertEquals(WeatherAlertCategory.RAIN, forecastAlerts(WeatherAlertSettings(), snapshot(listOf(later)),
+            Instant.parse("2026-09-22T10:00:00Z").toEpochMilli()).single().category)
+        assertTrue(forecastAlerts(WeatherAlertSettings(rainProbabilityPercent = 60), snapshot(listOf(later)),
+            Instant.parse("2026-09-22T10:00:00Z").toEpochMilli()).isEmpty())
+    }
+
+    @Test
     fun defaultsEnableOnlyRainAndOfficialWarningsAndBoundThresholds() {
         val settings = WeatherAlertSettings()
         assertEquals(setOf(WeatherAlertCategory.RAIN, WeatherAlertCategory.OFFICIAL),
@@ -39,9 +67,9 @@ class WeatherAlertsTest {
     }
 
     @Test
-    fun rainUsesFutureAccumulationAndIncludesSparseWetModelsWithoutInventedProbability() {
+    fun rainUsesFutureAccumulationAndModelAgreementWithoutInventedProbability() {
         val wet = hour("2026-09-22T12:00").copy(
-            precipitationSpread = PrecipitationModelSpread(5, 1, 0.0, 0.2),
+            precipitationSpread = PrecipitationModelSpread(5, 3, 0.0, 0.2),
         )
         val decision = forecastAlerts(WeatherAlertSettings(), snapshot(listOf(wet)), now).single()
         assertEquals(WeatherAlertCategory.RAIN, decision.category)

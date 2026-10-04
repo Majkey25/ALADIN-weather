@@ -25,9 +25,10 @@ internal object WeatherRefreshScheduler {
     private const val KEY_BRIEFING_DAY = "briefing_day"
 
     @Synchronized
-    fun request(context: Context, briefing: Boolean = false) {
+    fun request(context: Context, briefing: Boolean = false, scheduledAt: Long = System.currentTimeMillis()) {
         if (briefing) {
-            preferences(context).edit().putString(KEY_BRIEFING_DAY, LocalDate.now().toString()).apply()
+            preferences(context).edit().putString(KEY_BRIEFING_DAY, LocalDate.now().toString())
+                .putLong("briefing_scheduled_at", scheduledAt).apply()
         }
         val scheduler = context.getSystemService(JobScheduler::class.java)
         if (scheduler.getPendingJob(JOB_ID) != null) return
@@ -41,15 +42,28 @@ internal object WeatherRefreshScheduler {
         if (result == JobScheduler.RESULT_FAILURE) Log.w("WeatherRefresh", "Unable to schedule weather refresh")
     }
 
-    fun pendingBriefing(context: Context): String? = preferences(context)
-        .getString(KEY_BRIEFING_DAY, null)
-        ?.takeIf { isPendingBriefingForToday(it, LocalDate.now()) && DailyBriefingScheduler.isEnabled(context) }
+    @Synchronized
+    fun pendingBriefing(context: Context): String? {
+        val preferences = preferences(context)
+        val day = preferences.getString(KEY_BRIEFING_DAY, null)
+        if (isPendingBriefingForToday(day, LocalDate.now()) && DailyBriefingScheduler.isEnabled(context) &&
+            isBriefingDeliveryDue(briefingScheduledAt(context), System.currentTimeMillis())) return day
+        clearBriefing(context)
+        return null
+    }
+
+    fun briefingScheduledAt(context: Context): Long = preferences(context).getLong("briefing_scheduled_at", 0)
+
+    @Synchronized
+    fun clearBriefing(context: Context) {
+        preferences(context).edit().remove(KEY_BRIEFING_DAY).remove("briefing_scheduled_at").apply()
+    }
 
     @Synchronized
     fun deliveredBriefing(context: Context, day: String) {
         val preferences = preferences(context)
         if (preferences.getString(KEY_BRIEFING_DAY, null) == day) {
-            preferences.edit().remove(KEY_BRIEFING_DAY).apply()
+            clearBriefing(context)
         }
     }
 
@@ -69,10 +83,11 @@ open class WeatherRefreshJob : JobService() {
             .getAppWidgetIds(ComponentName(this, WeatherWidgetProvider::class.java)).isNotEmpty()
         val checkAlerts = WeatherAlertScheduler.enabled(this)
         val settings = WeatherAlertSettings.load(this)
-        val checkForecast = hasWidgets || briefingDay != null || (checkAlerts && WeatherAlertCategory.entries.any {
+        val prepareBriefing = params.jobId != WeatherAlertScheduler.JOB_ID && DailyBriefingScheduler.isEnabled(this)
+        val checkForecast = hasWidgets || briefingDay != null || prepareBriefing || (checkAlerts && WeatherAlertCategory.entries.any {
             it != WeatherAlertCategory.OFFICIAL && settings.isEnabled(it) && WeatherAlerts.canPost(this, it.channelId)
         })
-        if (!hasWidgets && briefingDay == null && !checkAlerts) return false
+        if (!hasWidgets && briefingDay == null && !checkAlerts && !prepareBriefing) return false
         val run = ++generation
         task = worker.submit {
             var retry = false
@@ -81,7 +96,7 @@ open class WeatherRefreshJob : JobService() {
                     val repository = WeatherRepository(applicationContext)
                     val location = repository.lastLocation()
                     val cached = repository.cachedForecast(location)
-                    val snapshot = if (params.jobId == WeatherAlertScheduler.JOB_ID && cached != null &&
+                    val snapshot = if ((params.jobId == WeatherAlertScheduler.JOB_ID || prepareBriefing) && cached != null &&
                         System.currentTimeMillis() - cached.updatedAtEpochMillis in 0 until TimeUnit.HOURS.toMillis(1)) {
                         cached
                     } else repository.fetchForecastBlocking(location)
@@ -91,7 +106,7 @@ open class WeatherRefreshJob : JobService() {
                         } else {
                             if (checkAlerts) WeatherAlerts.evaluateAndNotify(this, location, snapshot)
                             WeatherRefreshScheduler.pendingBriefing(this)?.let { day ->
-                                if (DailyBriefingReceiver().showBriefing(this)) {
+                                if (DailyBriefingReceiver().showBriefing(this, WeatherRefreshScheduler.briefingScheduledAt(this))) {
                                     WeatherRefreshScheduler.deliveredBriefing(this, day)
                                 }
                             }

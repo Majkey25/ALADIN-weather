@@ -35,4 +35,12 @@
     <string name="notification_background_delivery">Zustellung im Hintergrund</string>
     <string name="notification_background_help">Wetterprüfungen laufen auch bei geschlossener App. Android kann sie im Ruhezustand oder durch Akku-Beschränkungen verzögern. Erlauben Sie Hintergrundaktivität in den Akku-Einstellungen der App. Nach erzwungenem Beenden öffnen Sie die App erneut. Eine genaue Zustellzeit ist nicht garantiert.</string>
     <string name="notification_huawei_help">Huawei und Honor: Öffnen Sie die Starteinstellungen unter den Details zum Stromverbrauch. Wählen Sie manuelle Verwaltung und erlauben Sie Auto-Start, sekundären Start und Ausführung im Hintergrund. Dies kann mehr Akku verbrauchen.</string>
+    <string name="notification_morning_at">Jeden Tag um %1$s</string>
+    <string name="notification_morning_summary">Vorhersage vor Arbeit oder Schule mit Kleidung- und Regenschirmempfehlung.</string>
+    <string name="notification_morning_expiry">Verpasste Berichte verfallen nach 30 Minuten, damit der Morgenbericht nicht erst Stunden später ankommt.</string>
+    <string name="notification_rain_lead">Bis zu %1$d h vor Regen benachrichtigen</string>
+    <string name="notification_rain_probability">Regenwahrscheinlichkeit ab %1$d%%</string>
+    <string name="notification_exact_help">Erlauben Sie Wecker und Erinnerungen in Android für die gewählte Uhrzeit. Sonst kann Android Meldungen verzögern.</string>
+    <string name="notification_exact_enable">Pünktliche Meldungen erlauben</string>
+    <string name="notification_exact_allowed">Wecker und Erinnerungen erlaubt. Akku-Beschränkungen können die Zustellung weiterhin beeinflussen.</string>
 </resources>

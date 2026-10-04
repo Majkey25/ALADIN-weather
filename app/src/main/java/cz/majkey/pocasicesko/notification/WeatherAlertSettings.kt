@@ -27,6 +27,8 @@ data class WeatherAlertSettings(
     val windKmh: Double = 50.0,
     val uvIndex: Double = 6.0,
     val lookAheadHours: Int = 6,
+    val rainLeadHours: Int = 1,
+    val rainProbabilityPercent: Int = 40,
 ) {
     val anyEnabled: Boolean get() = WeatherAlertCategory.entries.any(::isEnabled)
 
@@ -57,6 +59,8 @@ data class WeatherAlertSettings(
         windKmh = windKmh.takeIf(Double::isFinite)?.coerceIn(20.0, 120.0) ?: 50.0,
         uvIndex = uvIndex.takeIf(Double::isFinite)?.coerceIn(3.0, 11.0) ?: 6.0,
         lookAheadHours = lookAheadHours.coerceIn(1, 12),
+        rainLeadHours = rainLeadHours.coerceIn(1, 12),
+        rainProbabilityPercent = rainProbabilityPercent.coerceIn(10, 90),
     )
 
     fun save(context: Context) {
@@ -69,6 +73,8 @@ data class WeatherAlertSettings(
             .putFloat("wind_kmh", settings.windKmh.toFloat())
             .putFloat("uv_index", settings.uvIndex.toFloat())
             .putInt("look_ahead_hours", settings.lookAheadHours)
+            .putInt("rain_lead_hours", settings.rainLeadHours)
+            .putInt("rain_probability_percent", settings.rainProbabilityPercent)
             .apply()
         WeatherAlerts.cancelDisabled(context, settings)
     }
@@ -90,6 +96,8 @@ data class WeatherAlertSettings(
                 windKmh = preferences.getFloat("wind_kmh", 50f).toDouble(),
                 uvIndex = preferences.getFloat("uv_index", 6f).toDouble(),
                 lookAheadHours = preferences.getInt("look_ahead_hours", 6),
+                rainLeadHours = preferences.getInt("rain_lead_hours", 1),
+                rainProbabilityPercent = preferences.getInt("rain_probability_percent", 40),
             ).normalized()
         }
 

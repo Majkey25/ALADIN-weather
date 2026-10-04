@@ -38,10 +38,15 @@ internal fun dailyBriefingAdvice(day: DailyWeather): DailyBriefingAdvice {
     )
 }
 
-internal fun nextDailyBriefingTime(now: ZonedDateTime): Instant {
-    val today = now.toLocalDate().atTime(BRIEFING_TIME).atZone(now.zone)
-    return (if (today.isAfter(now)) today else today.plusDays(1)).toInstant()
+internal fun nextDailyBriefingTime(now: ZonedDateTime, time: LocalTime = BRIEFING_TIME): Instant {
+    val today = now.toLocalDate().atTime(time).atZone(now.zone)
+    return (if (today.isAfter(now)) today else now.toLocalDate().plusDays(1).atTime(time).atZone(now.zone)).toInstant()
 }
+
+internal fun isBriefingDeliveryDue(scheduledAt: Long, now: Long): Boolean =
+    scheduledAt > 0 && now - scheduledAt in 0..BRIEFING_DELIVERY_WINDOW_MILLIS
+
+internal const val BRIEFING_DELIVERY_WINDOW_MILLIS = 30 * 60 * 1_000L
 
 internal const val DEFAULT_DAILY_BRIEFING_ENABLED = false
 internal val BRIEFING_TIME: LocalTime = LocalTime.of(7, 0)

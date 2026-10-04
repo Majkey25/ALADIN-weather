@@ -35,4 +35,12 @@
     <string name="notification_background_delivery">Réception en arrière-plan</string>
     <string name="notification_background_help">Les vérifications météo peuvent fonctionner avec l’application fermée. Android peut les retarder en veille ou en cas de restrictions de batterie. Autorisez l’activité en arrière-plan dans les réglages de batterie de l’application. Après un arrêt forcé, rouvrez l’application. Une heure précise de réception n’est pas garantie.</string>
     <string name="notification_huawei_help">Huawei et Honor : ouvrez les paramètres de lancement dans les détails de consommation. Choisissez la gestion manuelle et autorisez le lancement automatique, le lancement secondaire et l’exécution en arrière-plan. Cela peut consommer davantage de batterie.</string>
+    <string name="notification_morning_at">Chaque jour à %1$s</string>
+    <string name="notification_morning_summary">Prévisions avant le travail ou l’école, avec conseils vêtements et parapluie.</string>
+    <string name="notification_morning_expiry">Les bulletins manqués expirent après 30 minutes pour éviter de recevoir des conseils matinaux plusieurs heures plus tard.</string>
+    <string name="notification_rain_lead">Prévenir jusqu’à %1$d h avant la pluie</string>
+    <string name="notification_rain_probability">Seuil de probabilité de pluie : %1$d%%</string>
+    <string name="notification_exact_help">Autorisez Alarmes et rappels dans Android pour l’heure choisie. Sinon, Android peut retarder les alertes.</string>
+    <string name="notification_exact_enable">Autoriser les alertes à l’heure</string>
+    <string name="notification_exact_allowed">Alarmes et rappels autorisés. Les restrictions de batterie peuvent encore affecter la réception.</string>
 </resources>

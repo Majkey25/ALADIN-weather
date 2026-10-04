@@ -1,0 +1,1 @@
+Choose your morning briefing time. Missed briefings expire after 30 minutes and no longer arrive hours later. Set how far ahead to receive rain alerts and a rain probability threshold. Cached rain checks use Android alarms; Alarms & reminders access helps timely delivery on Android 12+. Battery restrictions can still affect delivery.

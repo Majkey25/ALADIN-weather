@@ -14,6 +14,7 @@ import androidx.core.content.ContextCompat
 import cz.majkey.pocasicesko.MainActivity
 import cz.majkey.pocasicesko.R
 import cz.majkey.pocasicesko.data.CzechLocation
+import cz.majkey.pocasicesko.data.HourlyWeather
 import cz.majkey.pocasicesko.data.WeatherSnapshot
 import cz.majkey.pocasicesko.data.hasPrecipitationEvidence
 import cz.majkey.pocasicesko.locale.AppLocale
@@ -44,11 +45,9 @@ internal fun forecastAlerts(
     val normalized = settings.normalized()
     val horizon = nowEpochMillis + normalized.lookAheadHours * HOUR_MILLIS
     val future = snapshot.hourly.mapNotNull { hour ->
-        val local = runCatching { LocalDateTime.parse(hour.time) }.getOrNull() ?: return@mapNotNull null
-        if (local.minute != 0 || local.second != 0 || local.nano != 0) return@mapNotNull null
-        val offset = zone.rules.getValidOffsets(local).singleOrNull() ?: return@mapNotNull null
-        val time = local.toInstant(offset).toEpochMilli()
-        (time to hour).takeIf { time > nowEpochMillis && time <= horizon + HOUR_MILLIS }
+        val time = forecastHourTime(hour, zone) ?: return@mapNotNull null
+        (time to hour).takeIf { time > nowEpochMillis &&
+            time <= nowEpochMillis + maxOf(normalized.lookAheadHours, normalized.rainLeadHours) * HOUR_MILLIS + HOUR_MILLIS }
     }.sortedBy { it.first }.distinctBy { it.first }
     val decisions = mutableListOf<ForecastAlert>()
     fun add(category: WeatherAlertCategory, time: Long, value: Double? = null) {
@@ -58,12 +57,8 @@ internal fun forecastAlerts(
     }
     future.forEachIndexed { index, (time, hour) ->
         // Source precipitation totals end at their timestamp; advise only for wholly future intervals.
-        if (time - HOUR_MILLIS >= nowEpochMillis && (
-            hasPrecipitationEvidence(hour.weatherCode, hour.precipitation, hour.rain, hour.showers, hour.snowfall) ||
-                hour.precipitationProbability in 40..100 ||
-                (hour.precipitationSpread?.wetModelCount?.let { it > 0 } == true)
-            )
-        ) add(WeatherAlertCategory.RAIN, time - HOUR_MILLIS)
+        if (time - HOUR_MILLIS in nowEpochMillis..(nowEpochMillis + normalized.rainLeadHours * HOUR_MILLIS) &&
+            rainAlertEvidence(hour, normalized)) add(WeatherAlertCategory.RAIN, time - HOUR_MILLIS)
         if (time > horizon) return@forEachIndexed
         hour.temperature.takeIf { it.isFinite() && it in -100.0..70.0 }?.let { temperature ->
             if (temperature <= normalized.coldCelsius) add(WeatherAlertCategory.COLD, time, temperature)
@@ -80,6 +75,30 @@ internal fun forecastAlerts(
             ?.let { add(WeatherAlertCategory.UV, time, it) }
     }
     return decisions
+}
+
+private fun forecastHourTime(hour: HourlyWeather, zone: ZoneId): Long? {
+    val local = runCatching { LocalDateTime.parse(hour.time) }.getOrNull() ?: return null
+    if (local.minute != 0 || local.second != 0 || local.nano != 0) return null
+    val offset = zone.rules.getValidOffsets(local).singleOrNull() ?: return null
+    return local.toInstant(offset).toEpochMilli()
+}
+
+private fun rainAlertEvidence(hour: HourlyWeather, settings: WeatherAlertSettings): Boolean =
+    hasPrecipitationEvidence(hour.weatherCode, hour.precipitation, hour.rain, hour.showers, hour.snowfall) ||
+        hour.precipitationProbability in settings.rainProbabilityPercent..100 ||
+        hour.precipitationSpread?.let { it.wetModelCount * 2 >= it.modelCount && it.maximumMm >= 0.1 } == true
+
+internal fun nextRainAlertTime(settings: WeatherAlertSettings, snapshot: WeatherSnapshot, now: Long): Long? {
+    val current = settings.normalized()
+    if (!current.rainEnabled || snapshot.updatedAtEpochMillis !in (now - MAX_FORECAST_AGE_MILLIS)..now) return null
+    val zone = forecastAlertZone(snapshot) ?: return null
+    return snapshot.hourly.mapNotNull { hour ->
+        if (!rainAlertEvidence(hour, current)) return@mapNotNull null
+        val time = forecastHourTime(hour, zone) ?: return@mapNotNull null
+        val notifyAt = time - (current.rainLeadHours + 1) * HOUR_MILLIS
+        notifyAt.takeIf { it > now && it <= snapshot.updatedAtEpochMillis + MAX_FORECAST_AGE_MILLIS }
+    }.minOrNull()
 }
 
 internal fun shouldPostWeatherAlert(previousKey: String?, postedAt: Long, nextKey: String, now: Long): Boolean =
@@ -120,6 +139,7 @@ object WeatherAlerts {
         val settings = WeatherAlertSettings.load(context)
         cancelDisabled(context, settings)
         val alerts = forecastAlerts(settings, snapshot, now)
+        WeatherAlertScheduler.scheduleRainCheck(context, snapshot, now)
         val manager = NotificationManagerCompat.from(context)
         WeatherAlertCategory.entries.filter { it != WeatherAlertCategory.OFFICIAL && alerts.none { alert -> alert.category == it } }
             .forEach { manager.cancel(it.notificationId) }

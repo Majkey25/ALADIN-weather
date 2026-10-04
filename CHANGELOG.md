@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.2] - 2026-10-04
+
+- Choose a daily briefing time in Notifications → Morning briefing. Prepare its forecast beforehand and deliver from the cache at the chosen time.
+- Expire missed briefings after 30 minutes and suppress duplicate delivery for the same day.
+- Set a separate rain lead time and probability threshold. Default to the next hour and avoid alerts from a single weak model signal alone.
+- Schedule cached rain checks through Android alarms alongside background forecast refresh. Add the Android Alarms & reminders shortcut for timely delivery on Android 12+.
+
 ## [0.4.1] - 2026-10-01
 
 - Restore rain and official-warning background checks after reboot or app updates even when morning briefing is off.

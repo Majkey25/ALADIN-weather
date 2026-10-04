@@ -1,0 +1,1 @@
+Choisissez l’heure du bulletin matinal. Les bulletins manqués expirent après 30 minutes. Réglez le délai et le seuil de probabilité des alertes pluie. Les prévisions enregistrées sont vérifiées par les alarmes Android. Dès Android 12, autorisez Alarmes et rappels pour une réception à l’heure. Les restrictions de batterie peuvent encore retarder les alertes.

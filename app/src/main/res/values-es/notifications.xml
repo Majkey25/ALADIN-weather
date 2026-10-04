@@ -35,4 +35,12 @@
     <string name="notification_background_delivery">Avisos en segundo plano</string>
     <string name="notification_background_help">El tiempo puede comprobarse con la app cerrada. Android puede retrasarlo durante el reposo o por restricciones de batería. Permite la actividad en segundo plano en los ajustes de batería de la app. Tras forzar su detención, vuelve a abrirla. No se garantiza una hora exacta de entrega.</string>
     <string name="notification_huawei_help">Huawei y Honor: abre los ajustes de inicio en los detalles de consumo. Elige la gestión manual y permite el inicio automático, el inicio secundario y la ejecución en segundo plano. Esto puede consumir más batería.</string>
+    <string name="notification_morning_at">Cada día a las %1$s</string>
+    <string name="notification_morning_summary">Previsión antes del trabajo o la escuela, con consejos de ropa y paraguas.</string>
+    <string name="notification_morning_expiry">Los resúmenes perdidos caducan a los 30 minutos para evitar recibir consejos matinales horas después.</string>
+    <string name="notification_rain_lead">Avisar hasta %1$d h antes de la lluvia</string>
+    <string name="notification_rain_probability">Umbral de probabilidad de lluvia: %1$d%%</string>
+    <string name="notification_exact_help">Permite Alarmas y recordatorios en Android para la hora elegida. De lo contrario, Android puede retrasar los avisos.</string>
+    <string name="notification_exact_enable">Permitir avisos puntuales</string>
+    <string name="notification_exact_allowed">Alarmas y recordatorios permitidos. Las restricciones de batería aún pueden afectar la entrega.</string>
 </resources>

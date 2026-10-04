@@ -35,4 +35,12 @@
     <string name="notification_background_delivery">Doručování na pozadí</string>
     <string name="notification_background_help">Kontroly počasí mohou běžet i při zavřené aplikaci. Android je může odložit při uspání nebo omezení baterie. V nastavení baterie aplikace povolte běh na pozadí. Po vynuceném zastavení aplikaci znovu otevřete. Přesný čas doručení není zaručen.</string>
     <string name="notification_huawei_help">Huawei a Honor: v podrobnostech spotřeby otevřete nastavení spouštění. Zvolte ruční správu a povolte automatické spuštění, sekundární spuštění a běh na pozadí. Spotřeba baterie se může zvýšit.</string>
+    <string name="notification_morning_at">Každý den v %1$s</string>
+    <string name="notification_morning_summary">Předpověď před prací nebo školou s doporučením oblečení a deštníku.</string>
+    <string name="notification_morning_expiry">Zmeškaný přehled po 30 minutách vyprší, aby ranní rada nepřišla až o několik hodin později.</string>
+    <string name="notification_rain_lead">Upozornit až %1$d h před deštěm</string>
+    <string name="notification_rain_probability">Hranice pravděpodobnosti deště: %1$d%%</string>
+    <string name="notification_exact_help">Pro doručení ve zvolený čas povolte v Androidu Budíky a připomenutí. Jinak může Android upozornění odložit.</string>
+    <string name="notification_exact_enable">Povolit včasná upozornění</string>
+    <string name="notification_exact_allowed">Budíky a připomenutí jsou povolené. Omezení baterie mohou doručení stále ovlivnit.</string>
 </resources>

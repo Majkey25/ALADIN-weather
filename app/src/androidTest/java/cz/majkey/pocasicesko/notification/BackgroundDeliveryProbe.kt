@@ -23,8 +23,12 @@ class BackgroundDeliveryProbe {
         check(!backup.contains("enabled")) { "Restore the preceding probe first" }
         check(backup.edit().putBoolean("enabled", DailyBriefingScheduler.isEnabled(context))
             .putString("pending_day", context.getSharedPreferences("weather_refresh", Context.MODE_PRIVATE)
-                .getString("briefing_day", null)).commit())
+                .getString("briefing_day", null))
+            .putLong("scheduled_at", WeatherRefreshScheduler.briefingScheduledAt(context))
+            .putString("delivered_day", context.getSharedPreferences("daily_briefing", Context.MODE_PRIVATE)
+                .getString("delivered_day", null)).commit())
         InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            context.getSharedPreferences("daily_briefing", Context.MODE_PRIVATE).edit().remove("delivered_day").commit()
             DailyBriefingScheduler.setEnabled(context, true)
             WeatherRefreshScheduler.request(context, briefing = true)
             check(scheduler.schedule(JobInfo.Builder(7003, ComponentName(context, WeatherRefreshJob::class.java))
@@ -44,7 +48,10 @@ class BackgroundDeliveryProbe {
         context.getSystemService(JobScheduler::class.java).cancel(7003)
         DailyBriefingScheduler.setEnabled(context, backup.getBoolean("enabled", false))
         check(context.getSharedPreferences("weather_refresh", Context.MODE_PRIVATE).edit()
-            .putString("briefing_day", backup.getString("pending_day", null)).commit())
+            .putString("briefing_day", backup.getString("pending_day", null))
+            .putLong("briefing_scheduled_at", backup.getLong("scheduled_at", 0)).commit())
+        check(context.getSharedPreferences("daily_briefing", Context.MODE_PRIVATE).edit()
+            .putString("delivered_day", backup.getString("delivered_day", null)).commit())
         context.getSystemService(NotificationManager::class.java).cancel(DailyBriefingScheduler.NOTIFICATION_ID)
         check(backup.edit().clear().commit())
     }
