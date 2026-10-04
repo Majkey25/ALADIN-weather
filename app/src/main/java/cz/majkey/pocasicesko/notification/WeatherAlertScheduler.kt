@@ -1,15 +1,21 @@
 package cz.majkey.pocasicesko.notification
 
 import android.Manifest
+import android.app.AlarmManager
+import android.app.PendingIntent
 import android.app.job.JobInfo
 import android.app.job.JobScheduler
 import android.content.ComponentName
 import android.content.Context
+import android.content.BroadcastReceiver
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
+import cz.majkey.pocasicesko.data.WeatherRepository
+import cz.majkey.pocasicesko.data.WeatherSnapshot
 import java.util.concurrent.TimeUnit
 
 internal object WeatherAlertScheduler {
@@ -39,5 +45,26 @@ internal object WeatherAlertScheduler {
                 .build())
             if (result == JobScheduler.RESULT_FAILURE) Log.w("WeatherAlerts", "Unable to schedule alert checks")
         }
+        val repository = WeatherRepository(context)
+        scheduleRainCheck(context, repository.cachedForecast(repository.lastLocation()))
+    }
+
+    fun scheduleRainCheck(context: Context, snapshot: WeatherSnapshot?, now: Long = System.currentTimeMillis()) {
+        val manager = context.getSystemService(AlarmManager::class.java)
+        val pending = PendingIntent.getBroadcast(context, 7100, Intent(context, WeatherAlertReceiver::class.java),
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+        val trigger = snapshot?.takeIf { WeatherAlerts.canPost(context, WeatherAlertCategory.RAIN.channelId) }
+            ?.let { nextRainAlertTime(WeatherAlertSettings.load(context), it, now) }
+        if (trigger == null) manager.cancel(pending)
+        else DailyBriefingScheduler.setAlarm(context, trigger, pending)
+    }
+}
+
+class WeatherAlertReceiver : BroadcastReceiver() {
+    override fun onReceive(context: Context, intent: Intent) {
+        val repository = WeatherRepository(context)
+        val location = repository.lastLocation()
+        repository.cachedForecast(location)?.let { WeatherAlerts.evaluateAndNotify(context, location, it) }
+        WeatherRefreshScheduler.request(context)
     }
 }

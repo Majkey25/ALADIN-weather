@@ -1,6 +1,8 @@
 package cz.majkey.pocasicesko.ui
 
 import android.os.Build
+import android.app.TimePickerDialog
+import android.text.format.DateFormat
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,6 +16,7 @@ import androidx.compose.foundation.selection.toggleable
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Air
 import androidx.compose.material.icons.rounded.BatteryAlert
+import androidx.compose.material.icons.rounded.Umbrella
 import androidx.compose.material.icons.rounded.Schedule
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material.icons.rounded.Thermostat
@@ -51,10 +54,13 @@ import cz.majkey.pocasicesko.R
 import cz.majkey.pocasicesko.locale.AppLocale
 import cz.majkey.pocasicesko.notification.WeatherAlertCategory
 import cz.majkey.pocasicesko.notification.WeatherAlertSettings
+import cz.majkey.pocasicesko.notification.BRIEFING_TIME
 import cz.majkey.pocasicesko.notification.temperatureDropText
 import cz.majkey.pocasicesko.units.MeasurementSystem
 import cz.majkey.pocasicesko.units.WeatherUnitFormatter
 import kotlin.math.roundToInt
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
 
 enum class NotificationSettingsSection(val title: Int) {
     GENERAL(R.string.notifications),
@@ -64,6 +70,8 @@ enum class NotificationSettingsSection(val title: Int) {
     UV(R.string.notification_uv),
     TIMING(R.string.settings_alert_timing),
     DELIVERY(R.string.notification_background_delivery),
+    MORNING(R.string.daily_briefing),
+    RAIN(R.string.notification_rain),
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -81,8 +89,15 @@ fun NotificationSettingsSheet(
     onDismiss: () -> Unit,
     blockedChannels: Set<String> = emptySet(),
     initialSection: NotificationSettingsSection = NotificationSettingsSection.GENERAL,
+    briefingTime: LocalTime = BRIEFING_TIME,
+    onBriefingTimeChange: (LocalTime) -> Unit = {},
+    exactAlarmsAllowed: Boolean = true,
+    onRequestExactAlarms: () -> Unit = {},
 ) {
-    val units = WeatherUnitFormatter(measurementSystem, AppLocale.locale(LocalContext.current))
+    val context = LocalContext.current
+    val units = WeatherUnitFormatter(measurementSystem, AppLocale.locale(context))
+    val timeText = briefingTime.format(DateTimeFormatter.ofPattern(
+        if (DateFormat.is24HourFormat(context)) "HH:mm" else "h:mm a", AppLocale.locale(context)))
     val current = settings.normalized()
     var section by rememberSaveable(initialSection) { mutableStateOf(initialSection) }
     val rootListState = rememberLazyListState()
@@ -121,14 +136,9 @@ fun NotificationSettingsSheet(
                             }
                         }
                         item {
-                            NotificationToggle(
-                                title = stringResource(R.string.daily_briefing),
-                                summary = stringResource(R.string.daily_briefing_summary),
-                                enabled = dailyBriefingEnabled,
-                                onChange = onDailyBriefingChange,
-                                onChannelSettings = { onChannelSettings("daily_weather_briefing") },
-                                systemBlocked = "daily_weather_briefing" in blockedChannels,
-                            )
+                            SettingsCategoryRow(R.string.daily_briefing, Icons.Rounded.Schedule,
+                                if (dailyBriefingEnabled) stringResource(R.string.notification_morning_at, timeText)
+                                else stringResource(R.string.settings_off)) { section = NotificationSettingsSection.MORNING }
                         }
                         item {
                             SettingsCategoryRow(R.string.notification_official, Icons.Rounded.WarningAmber,
@@ -138,8 +148,9 @@ fun NotificationSettingsSheet(
                             }
                         }
                         item {
-                            AlertCategorySettings(WeatherAlertCategory.RAIN, current, units, measurementSystem,
-                                blockedChannels, onSettingsChange, onChannelSettings)
+                            SettingsCategoryRow(R.string.notification_rain, Icons.Rounded.Umbrella,
+                                if (current.rainEnabled) stringResource(R.string.notification_rain_lead, current.rainLeadHours)
+                                else stringResource(R.string.settings_off)) { section = NotificationSettingsSection.RAIN }
                         }
                         item {
                             SettingsCategoryRow(R.string.settings_temperature_alerts, Icons.Rounded.Thermostat,
@@ -181,6 +192,25 @@ fun NotificationSettingsSheet(
                             Button(onClick = onBackgroundSettings, modifier = Modifier.fillMaxWidth().padding(top = 16.dp)) {
                                 Text(stringResource(R.string.open_app_settings))
                             }
+                            ExactAlarmSettings(exactAlarmsAllowed, onRequestExactAlarms)
+                        }
+                    }
+                    NotificationSettingsSection.MORNING -> item {
+                        NotificationToggle(title = stringResource(R.string.daily_briefing),
+                            summary = stringResource(R.string.notification_morning_summary), enabled = dailyBriefingEnabled,
+                            onChange = onDailyBriefingChange,
+                            onChannelSettings = { onChannelSettings("daily_weather_briefing") },
+                            systemBlocked = "daily_weather_briefing" in blockedChannels)
+                        Column(Modifier.fillMaxWidth().padding(horizontal = 20.dp)) {
+                            Button(onClick = {
+                                TimePickerDialog(context, { _, hour, minute -> onBriefingTimeChange(LocalTime.of(hour, minute)) },
+                                    briefingTime.hour, briefingTime.minute, DateFormat.is24HourFormat(context)).show()
+                            }, modifier = Modifier.fillMaxWidth()) {
+                                Text(stringResource(R.string.notification_morning_at, timeText))
+                            }
+                            Text(stringResource(R.string.notification_morning_expiry), Modifier.padding(top = 12.dp),
+                                color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            ExactAlarmSettings(exactAlarmsAllowed, onRequestExactAlarms)
                         }
                     }
                     NotificationSettingsSection.TIMING -> item {
@@ -196,6 +226,7 @@ fun NotificationSettingsSheet(
                                 WeatherAlertCategory.COLD, WeatherAlertCategory.DROP, WeatherAlertCategory.HEAT)
                             NotificationSettingsSection.WIND -> listOf(WeatherAlertCategory.WIND)
                             NotificationSettingsSection.UV -> listOf(WeatherAlertCategory.UV)
+                            NotificationSettingsSection.RAIN -> listOf(WeatherAlertCategory.RAIN)
                             else -> emptyList()
                         },
                         key = { it.name },
@@ -254,7 +285,26 @@ private fun AlertCategorySettings(
                 stringResource(R.string.notification_uv_threshold, current.uvIndex.roundToInt()),
                 current.uvIndex, 3f..11f,
             ) { onSettingsChange(current.copy(uvIndex = it)) }
-            WeatherAlertCategory.RAIN, WeatherAlertCategory.OFFICIAL -> Unit
+            WeatherAlertCategory.RAIN -> {
+                NotificationThreshold(stringResource(R.string.notification_rain_lead, current.rainLeadHours),
+                    current.rainLeadHours.toDouble(), 1f..12f) { onSettingsChange(current.copy(rainLeadHours = it.roundToInt())) }
+                NotificationThreshold(stringResource(R.string.notification_rain_probability, current.rainProbabilityPercent),
+                    current.rainProbabilityPercent.toDouble(), 10f..90f) {
+                    onSettingsChange(current.copy(rainProbabilityPercent = it.roundToInt()))
+                }
+            }
+            WeatherAlertCategory.OFFICIAL -> Unit
+        }
+    }
+}
+
+@Composable
+private fun ExactAlarmSettings(allowed: Boolean, onRequest: () -> Unit) {
+    if (Build.VERSION.SDK_INT >= 31) {
+        Text(stringResource(if (allowed) R.string.notification_exact_allowed else R.string.notification_exact_help),
+            Modifier.padding(top = 12.dp), color = MaterialTheme.colorScheme.onSurfaceVariant)
+        if (!allowed) Button(onClick = onRequest, modifier = Modifier.fillMaxWidth().padding(top = 8.dp)) {
+            Text(stringResource(R.string.notification_exact_enable))
         }
     }
 }

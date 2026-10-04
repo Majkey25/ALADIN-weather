@@ -3,6 +3,7 @@ package cz.majkey.pocasicesko.notification
 import cz.majkey.pocasicesko.data.DailyWeather
 import java.time.ZoneId
 import java.time.LocalDate
+import java.time.LocalTime
 import java.time.ZonedDateTime
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -10,6 +11,23 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class DailyBriefingTest {
+    @Test
+    fun chosenCommuteTimeIsKeptAfterDaylightSavingChanges() {
+        assertEquals(ZonedDateTime.parse("2026-10-25T06:20:00+01:00[Europe/Prague]").toInstant(),
+            nextDailyBriefingTime(ZonedDateTime.parse("2026-10-24T08:00:00+02:00[Europe/Prague]"), LocalTime.of(6, 20)))
+        assertEquals(ZonedDateTime.parse("2026-10-04T06:20:00+02:00[Europe/Prague]").toInstant(),
+            nextDailyBriefingTime(ZonedDateTime.parse("2026-10-04T05:00:00+02:00[Europe/Prague]"), LocalTime.of(6, 20)))
+    }
+
+    @Test
+    fun morningDeliveryRejectsEarlyAndHoursLateRequests() {
+        val due = 1_000_000L
+        assertFalse(isBriefingDeliveryDue(due, due - 1))
+        assertTrue(isBriefingDeliveryDue(due, due))
+        assertTrue(isBriefingDeliveryDue(due, due + 29 * 60 * 1000))
+        assertFalse(isBriefingDeliveryDue(due, due + 31 * 60 * 1000))
+        assertFalse(isBriefingDeliveryDue(0, due))
+    }
     @Test
     fun missingRainChanceStillUsesActualRainEvidence() {
         assertTrue(dailyBriefingAdvice(day(rain = 0.3).copy(precipitationProbability = null)).umbrella)

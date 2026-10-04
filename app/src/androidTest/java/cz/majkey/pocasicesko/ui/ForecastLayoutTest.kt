@@ -19,6 +19,8 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.click
 import androidx.compose.ui.test.isDialog
+import androidx.compose.ui.test.hasClickAction
+import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.swipeLeft
 import androidx.compose.ui.test.swipeRight
 import androidx.compose.ui.test.performScrollTo
@@ -71,16 +73,18 @@ class ForecastLayoutTest {
         }
         compose.onNodeWithText(context.getString(R.string.notification_enable)).performTouchInput { click() }
         assertEquals(1, permissionRequests)
+        val rainLabel = context.getString(WeatherAlertCategory.RAIN.labelResource)
+        compose.onNodeWithText(rainLabel).performScrollTo().performTouchInput { click() }
         compose.onNodeWithText(context.getString(R.string.notification_channel_blocked), substring = true)
             .performScrollTo().assertIsDisplayed()
-        val rainLabel = context.getString(WeatherAlertCategory.RAIN.labelResource)
         compose.onNodeWithContentDescription(context.getString(R.string.notification_channel_settings, rainLabel))
             .performScrollTo().performTouchInput { click() }
         assertEquals(WeatherAlertCategory.RAIN.channelId, openedChannel)
         assertTrue(settings.value.rainEnabled)
-        compose.onNodeWithText(rainLabel).performTouchInput { click() }
+        compose.onNode(hasText(rainLabel) and hasClickAction()).performTouchInput { click() }
         assertFalse(settings.value.rainEnabled)
         assertTrue(settings.value.officialWarningsEnabled)
+        compose.onNodeWithContentDescription(context.getString(R.string.back)).performTouchInput { click() }
         compose.onNodeWithText(context.getString(R.string.settings_temperature_alerts)).performScrollTo().performTouchInput { click() }
         val coldLabel = context.getString(WeatherAlertCategory.COLD.labelResource)
         compose.onNodeWithText(coldLabel).performScrollTo().performTouchInput { click() }

@@ -67,7 +67,9 @@ The historical data was obtained from the NASA Langley Research Center POWER pro
 
 ## Background notifications
 
-Rain and warning checks use a persisted Android job, independently of the optional morning briefing. Closing the app normally does not require keeping its screen open. Android controls execution timing and can delay work during Doze or battery restrictions. After Force stop, reopen the app to resume work. Manufacturer-specific background restrictions may also need review in Android app/battery settings. See [Android background limits](https://developer.android.com/topic/performance/background-optimization).
+Choose a daily time in **Settings → Notifications → Morning briefing**. The forecast is prepared beforehand and a native alarm can deliver cached advice with the app closed. Missed briefings expire after 30 minutes. **Rain and umbrella** has a separate lead time, default one hour, and probability threshold. Cached rain alarms run alongside the persisted forecast-refresh job.
+
+On Android 12+, **Background delivery → Allow timely alerts** opens Alarms & reminders access. Android controls execution timing and can delay work during Doze or manufacturer battery restrictions. After Force stop, reopen the app to resume work. See [Android alarm scheduling](https://developer.android.com/develop/background-work/services/alarms/schedule).
 
 ## Language and requirements
 

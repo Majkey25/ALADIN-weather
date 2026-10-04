@@ -4,6 +4,7 @@ import android.app.job.JobScheduler
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
+import java.time.LocalDate
 import androidx.test.platform.app.InstrumentationRegistry
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
@@ -16,6 +17,16 @@ class NotificationRecoveryTest {
     private val context get() = object : ContextWrapper(base) {
         override fun getSharedPreferences(name: String, mode: Int) =
             super.getSharedPreferences("notification_recovery_test_$name", mode)
+    }
+
+    @Test
+    fun missedMorningBriefingExpiresInsteadOfArrivingWhenAppOpensLater() {
+        val context = context
+        context.getSharedPreferences("daily_briefing", Context.MODE_PRIVATE).edit().putBoolean("enabled", true).commit()
+        val preferences = context.getSharedPreferences("weather_refresh", Context.MODE_PRIVATE)
+        preferences.edit().putString("briefing_day", LocalDate.now().toString())
+            .putLong("briefing_scheduled_at", System.currentTimeMillis() - 2 * 60 * 60 * 1000L).commit()
+        assertNull(WeatherRefreshScheduler.pendingBriefing(context))
     }
 
     @Test

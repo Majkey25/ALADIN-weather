@@ -1,0 +1,1 @@
+Nastavte si čas ranního přehledu. Zmeškané přehledy po 30 minutách vyprší a nepřijdou až o několik hodin později. Zvolte předstih upozornění na déšť a hranici pravděpodobnosti. Upozornění z uložené předpovědi používají budíky Androidu. Na Androidu 12+ pomůže povolení Budíky a připomenutí. Omezení baterie mohou doručení stále ovlivnit.
