@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.4.4] - 2026-10-05
+
+- Fetch the three nearest ČHMÚ station observations concurrently, retaining their selected order, per-source fallback and timeouts.
+
 ## [0.4.3] - 2026-10-05
 
 - Ask before background alerts and morning briefings reuse saved coordinates, including after an update on Android 10. Keep previous alert settings and provide an off switch in Notifications.

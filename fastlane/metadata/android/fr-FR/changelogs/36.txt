@@ -1,0 +1,1 @@
+Les observations actuelles des stations ČHMÚ proches sont chargées simultanément pour réduire l’attente entre les requêtes. La validation des données, les heures de mesure et les réglages de notification sont conservés.

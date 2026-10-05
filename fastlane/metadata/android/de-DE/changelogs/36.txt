@@ -1,0 +1,1 @@
+Aktuelle Messwerte naher ČHMÚ-Stationen werden gleichzeitig geladen, um Wartezeiten zwischen Anfragen zu verringern. Datenprüfung, Messzeitpunkte und Benachrichtigungseinstellungen bleiben erhalten.

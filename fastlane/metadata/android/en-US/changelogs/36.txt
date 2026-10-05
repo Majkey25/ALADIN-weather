@@ -1,0 +1,1 @@
+Load current observations from nearby ČHMÚ stations together to reduce waiting between requests. Preserve data checks, source timestamps and notification preferences.

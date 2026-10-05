@@ -1,0 +1,1 @@
+Aktuální měření z blízkých stanic ČHMÚ se načítají souběžně, což omezuje čekání mezi požadavky. Kontroly dat, časy měření a nastavení upozornění zůstávají zachovány.
