@@ -64,6 +64,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -228,6 +229,7 @@ fun WeatherApp(
     var warningsRefreshing by remember(location) { mutableStateOf(false) }
     var warningsReloadKey by remember { mutableIntStateOf(0) }
     var alertSettings by remember { mutableStateOf(WeatherAlertSettings.load(context)) }
+    var showBackgroundDisclosure by remember { mutableStateOf(WeatherAlertSettings.needsBackgroundDisclosure(context)) }
     var notificationsAllowed by remember { mutableStateOf(WeatherAlertScheduler.notificationsAllowed(context)) }
     var requestedAlertsPermission by rememberSaveable { mutableStateOf(false) }
     var notificationChannelsVersion by remember { mutableIntStateOf(0) }
@@ -270,6 +272,23 @@ fun WeatherApp(
     val alertPermissionLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) {
         notificationsAllowed = WeatherAlertScheduler.notificationsAllowed(context)
         WeatherAlertScheduler.sync(context)
+    }
+
+    fun saveAlertSettings(selected: WeatherAlertSettings) {
+        alertSettings = selected.normalized()
+        alertSettings.save(context)
+        dailyBriefingEnabled = DailyBriefingScheduler.isEnabled(context)
+        DailyBriefingScheduler.schedule(context)
+        WeatherAlertScheduler.sync(context)
+    }
+
+    fun acceptBackgroundChoice(allowed: Boolean) {
+        saveAlertSettings(alertSettings.copy(backgroundAlertsAllowed = allowed))
+        showBackgroundDisclosure = false
+        if (allowed && Build.VERSION.SDK_INT >= 33 && !notificationsAllowed) {
+            requestedAlertsPermission = true
+            alertPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+        }
     }
 
     fun setDailyBriefing(enabled: Boolean) {
@@ -367,6 +386,18 @@ fun WeatherApp(
 
     val snapshot = (state as? WeatherUiState.Content)?.snapshot
     WeatherTheme(appearance = appearance) {
+        if (showBackgroundDisclosure) AlertDialog(
+            onDismissRequest = { acceptBackgroundChoice(false) },
+            title = { Text(stringResource(R.string.notification_background_consent_title)) },
+            text = { Text(stringResource(R.string.notification_background_disclosure),
+                modifier = Modifier.verticalScroll(rememberScrollState())) },
+            confirmButton = { TextButton(onClick = { acceptBackgroundChoice(true) }) {
+                Text(stringResource(R.string.notification_background_allow))
+            } },
+            dismissButton = { TextButton(onClick = { acceptBackgroundChoice(false) }) {
+                Text(stringResource(R.string.notification_background_decline))
+            } },
+        )
         Box(Modifier.fillMaxSize().imePadding()) {
             WeatherBackdrop(snapshot = snapshot, appearance = appearance)
             Scaffold(
@@ -479,11 +510,7 @@ fun WeatherApp(
                     dailyBriefingEnabled = dailyBriefingEnabled,
                     notificationsAllowed = notificationsAllowed,
                     blockedChannels = blockedChannels,
-                    onSettingsChange = { selected ->
-                        alertSettings = selected.normalized()
-                        alertSettings.save(context)
-                        WeatherAlertScheduler.sync(context)
-                    },
+                    onSettingsChange = ::saveAlertSettings,
                     onDailyBriefingChange = ::setDailyBriefing,
                     briefingTime = briefingTime,
                     onBriefingTimeChange = { selected ->

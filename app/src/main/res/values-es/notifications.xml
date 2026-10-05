@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="notification_background_consent_title">Avisos del tiempo en segundo plano</string>
+    <string name="notification_background_disclosure">¿Permitir que Selia Weather envíe las coordenadas guardadas a Open-Meteo, AviationWeather y ČÚZK/NWS para avisos y resúmenes matinales con la app cerrada? No obtiene una nueva ubicación. Puedes cambiarlo en Notificaciones. Tus preferencias de avisos se conservan. Los widgets añadidos se actualizan por separado.</string>
+    <string name="notification_background_allow">Permitir</string>
+    <string name="notification_background_decline">Ahora no</string>
     <string name="notification_channel_blocked">Desactivado en los ajustes de Android</string>
     <string name="notifications">Notificaciones</string>
     <string name="notification_settings_summary">Avisos para la última ubicación seleccionada. Android puede retrasar su entrega.</string>
-    <string name="notification_permission_summary">Android bloquea las notificaciones. Tus preferencias están guardadas.</string>
+    <string name="notification_permission_summary">Android bloquea las notificaciones. Al permitirlas, Selia Weather puede enviar las coordenadas guardadas a Open-Meteo, AviationWeather y ČÚZK/NWS para el tiempo y las alertas con la app cerrada. No obtiene una nueva ubicación del dispositivo. Tus preferencias están guardadas.</string>
     <string name="notification_enable">Activar notificaciones</string>
     <string name="notification_channel_settings">Ajustes de Android para %1$s</string>
     <string name="notification_rain">Lluvia y paraguas</string>
@@ -33,7 +37,7 @@
     <string name="notification_wind_advice">Hacia %1$s se esperan viento o rachas de unos %2$s. Asegura los objetos sueltos.</string>
     <string name="notification_uv_advice">Hacia %1$s se espera un índice UV de %2$d. Usa protección solar.</string>
     <string name="notification_background_delivery">Avisos en segundo plano</string>
-    <string name="notification_background_help">El tiempo puede comprobarse con la app cerrada. Android puede retrasarlo durante el reposo o por restricciones de batería. Permite la actividad en segundo plano en los ajustes de batería de la app. Tras forzar su detención, vuelve a abrirla. No se garantiza una hora exacta de entrega.</string>
+    <string name="notification_background_help">Las comprobaciones activadas envían las coordenadas guardadas a proveedores del tiempo y de alertas con la app cerrada; no obtienen una nueva ubicación del dispositivo. Android puede retrasarlas durante el reposo o por restricciones de batería. Permite la actividad en segundo plano en los ajustes de batería de la app. Tras forzar su detención, vuelve a abrirla. No se garantiza una hora exacta de entrega.</string>
     <string name="notification_huawei_help">Huawei y Honor: abre los ajustes de inicio en los detalles de consumo. Elige la gestión manual y permite el inicio automático, el inicio secundario y la ejecución en segundo plano. Esto puede consumir más batería.</string>
     <string name="notification_morning_at">Cada día a las %1$s</string>
     <string name="notification_morning_summary">Previsión antes del trabajo o la escuela, con consejos de ropa y paraguas.</string>

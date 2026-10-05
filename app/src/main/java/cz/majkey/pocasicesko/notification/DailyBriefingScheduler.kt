@@ -34,7 +34,7 @@ internal object DailyBriefingScheduler {
         )
     }
 
-    fun isEnabled(context: Context): Boolean = preferences(context).getBoolean(
+    fun isEnabled(context: Context): Boolean = WeatherAlertSettings.load(context).backgroundAlertsAllowed && preferences(context).getBoolean(
         KEY_ENABLED,
         DEFAULT_DAILY_BRIEFING_ENABLED,
     )
@@ -71,7 +71,10 @@ internal object DailyBriefingScheduler {
     }
 
     fun schedule(context: Context, now: ZonedDateTime = ZonedDateTime.now()) {
-        if (!isEnabled(context)) return
+        if (!isEnabled(context)) {
+            cancel(context)
+            return
+        }
         val manager = alarmManager(context)
         val trigger = nextDailyBriefingTime(now, time(context)).toEpochMilli()
         setAlarm(context, trigger, pendingIntent(context, ACTION_SHOW, trigger))

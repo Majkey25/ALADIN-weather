@@ -17,6 +17,7 @@ class BackgroundDeliveryProbe {
     fun prepare() {
         assumeTrue(InstrumentationRegistry.getArguments().getString("backgroundProbe") == "true")
         check(context.packageName.endsWith(".debug"))
+        check(WeatherAlertSettings.load(context).backgroundAlertsAllowed) { "Enable background alerts in the app before the probe" }
         val scheduler = context.getSystemService(JobScheduler::class.java)
         check(scheduler.getPendingJob(7003) == null) { "Existing refresh work must finish first" }
         val backup = context.getSharedPreferences("notification_probe", Context.MODE_PRIVATE)

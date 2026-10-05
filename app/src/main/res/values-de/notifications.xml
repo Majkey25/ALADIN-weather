@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="notification_background_consent_title">Wetterhinweise im Hintergrund</string>
+    <string name="notification_background_disclosure">Darf Selia Weather gespeicherte Koordinaten bei geschlossener App für Wetterhinweise und Morgenberichte an Open-Meteo, AviationWeather und ČÚZK/NWS senden? Es wird kein neuer Gerätestandort gelesen. Die Auswahl ist unter Benachrichtigungen änderbar. Ihre Hinweiseinstellungen bleiben erhalten. Hinzugefügte Widgets werden separat aktualisiert.</string>
+    <string name="notification_background_allow">Erlauben</string>
+    <string name="notification_background_decline">Jetzt nicht</string>
     <string name="notification_channel_blocked">In den Android-Einstellungen deaktiviert</string>
     <string name="notifications">Benachrichtigungen</string>
     <string name="notification_settings_summary">Hinweise für den zuletzt gewählten Ort. Android kann die Zustellung verzögern.</string>
-    <string name="notification_permission_summary">Android blockiert Benachrichtigungen. Ihre Einstellungen bleiben gespeichert.</string>
+    <string name="notification_permission_summary">Android blockiert Benachrichtigungen. Nach der Freigabe kann Selia Weather gespeicherte Koordinaten bei geschlossener App für Wetter und Warnungen an Open-Meteo, AviationWeather und ČÚZK/NWS senden. Kein neuer Gerätestandort wird gelesen. Ihre Einstellungen bleiben gespeichert.</string>
     <string name="notification_enable">Benachrichtigungen erlauben</string>
     <string name="notification_channel_settings">Android-Einstellungen für %1$s</string>
     <string name="notification_rain">Regen und Regenschirm</string>
@@ -33,7 +37,7 @@
     <string name="notification_wind_advice">Gegen %1$s werden Wind oder Böen um %2$s erwartet. Lose Gegenstände sichern.</string>
     <string name="notification_uv_advice">Gegen %1$s wird UV-Index %2$d erwartet. Sonnenschutz verwenden.</string>
     <string name="notification_background_delivery">Zustellung im Hintergrund</string>
-    <string name="notification_background_help">Wetterprüfungen laufen auch bei geschlossener App. Android kann sie im Ruhezustand oder durch Akku-Beschränkungen verzögern. Erlauben Sie Hintergrundaktivität in den Akku-Einstellungen der App. Nach erzwungenem Beenden öffnen Sie die App erneut. Eine genaue Zustellzeit ist nicht garantiert.</string>
+    <string name="notification_background_help">Aktivierte Wetterprüfungen senden gespeicherte Koordinaten bei geschlossener App an Wetter- und Warnanbieter; sie lesen keinen neuen Gerätestandort. Android kann sie im Ruhezustand oder durch Akku-Beschränkungen verzögern. Erlauben Sie Hintergrundaktivität in den Akku-Einstellungen der App. Nach erzwungenem Beenden öffnen Sie die App erneut. Eine genaue Zustellzeit ist nicht garantiert.</string>
     <string name="notification_huawei_help">Huawei und Honor: Öffnen Sie die Starteinstellungen unter den Details zum Stromverbrauch. Wählen Sie manuelle Verwaltung und erlauben Sie Auto-Start, sekundären Start und Ausführung im Hintergrund. Dies kann mehr Akku verbrauchen.</string>
     <string name="notification_morning_at">Jeden Tag um %1$s</string>
     <string name="notification_morning_summary">Vorhersage vor Arbeit oder Schule mit Kleidung- und Regenschirmempfehlung.</string>

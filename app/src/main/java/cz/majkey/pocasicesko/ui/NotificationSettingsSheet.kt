@@ -118,7 +118,17 @@ fun NotificationSettingsSheet(
                 modifier = Modifier.weight(1f, fill = false).fillMaxWidth()
                     .navigationBarsPadding().padding(bottom = 24.dp),
             ) {
-                if (!notificationsAllowed) {
+                item {
+                    ListItem(
+                        headlineContent = { Text(stringResource(R.string.notification_background_consent_title)) },
+                        supportingContent = { Text(stringResource(R.string.notification_background_disclosure)) },
+                        trailingContent = { Switch(checked = current.backgroundAlertsAllowed, onCheckedChange = null) },
+                        modifier = Modifier.fillMaxWidth().toggleable(value = current.backgroundAlertsAllowed,
+                            role = Role.Switch, onValueChange = { onSettingsChange(current.copy(backgroundAlertsAllowed = it)) }),
+                        colors = ListItemDefaults.colors(containerColor = Color.Transparent),
+                    )
+                }
+                if (current.backgroundAlertsAllowed && !notificationsAllowed) {
                     item {
                         Text(stringResource(R.string.notification_permission_summary),
                             modifier = Modifier.padding(horizontal = 20.dp))

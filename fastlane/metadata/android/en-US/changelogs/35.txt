@@ -1,0 +1,1 @@
+Choose whether background alerts and morning briefings may use saved coordinates. Existing alert settings are kept, and the choice can be changed in Notifications. Location recipients are explained before GPS permission. Clearer privacy and data deletion information.

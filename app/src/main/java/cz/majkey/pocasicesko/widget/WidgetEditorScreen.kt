@@ -118,6 +118,7 @@ internal fun WidgetEditorScreen(
             item {
                 Text(stringResource(R.string.widget_title), fontSize = 30.sp, fontWeight = FontWeight.SemiBold)
                 Text(stringResource(R.string.widget_preview_description), color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 13.sp)
+                Text(stringResource(R.string.widget_background_disclosure), color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 13.sp)
             }
             item {
                 PreviewSizeSelector(previewSize) { previewSize = it }

@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.4.3] - 2026-10-05
+
+- Ask before background alerts and morning briefings reuse saved coordinates, including after an update on Android 10. Keep previous alert settings and provide an off switch in Notifications.
+- Explain location recipients before GPS permission and clarify local data deletion in the privacy policy.
+
 ## [0.4.2] - 2026-10-04
 
 - Choose a daily briefing time in Notifications → Morning briefing. Prepare its forecast beforehand and deliver from the cache at the chosen time.

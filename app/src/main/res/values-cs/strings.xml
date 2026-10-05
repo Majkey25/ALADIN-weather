@@ -118,7 +118,7 @@
     <string name="wind_value">%1$s km/h</string>
     <string name="locations">Místa</string>
     <string name="use_my_location">Použít moji polohu</string>
-    <string name="location_purpose">Vaše poloha slouží k zobrazení místního počasí.</string>
+    <string name="location_purpose">Selia Weather odesílá vybrané souřadnice službám Open-Meteo, AviationWeather a ČÚZK/NWS pro počasí a výstrahy a službě Android Geocoder pro název místa. Widgety a zapnutá upozornění mohou používat uložené souřadnice i při zavřené aplikaci. Váš pohyb se nesleduje.</string>
     <string name="choose_point_on_map">Vybrat bod na mapě</string>
     <string name="pinned_location_purpose">Uložte přesný bod, například vlastní pole.</string>
     <string name="pinned_location_title">Přesný bod</string>
@@ -219,6 +219,7 @@
     <string name="radar_unavailable">Radar není k dispozici</string>
     <string name="widget_title">Widget počasí</string>
     <string name="widget_add">Přidat widget na plochu</string>
+    <string name="widget_background_disclosure">Widgety při aktualizaci odesílají uloženou polohu službám Open-Meteo a AviationWeather i při zavřené aplikaci. Novou polohu zařízení nezjišťují. Odebráním widgetu jeho aktualizace zastavíte.</string>
     <string name="widget_add_unavailable">Tento launcher neumí widget přidat automaticky.</string>
     <string name="widget_preview_description">Náhled widgetu počasí</string>
     <string name="widget_size_compact">Kompaktní</string>

@@ -27,6 +27,7 @@ import androidx.compose.ui.test.swipeRight
 import androidx.test.platform.app.InstrumentationRegistry
 import cz.majkey.pocasicesko.R
 import cz.majkey.pocasicesko.data.WeatherRepository
+import cz.majkey.pocasicesko.notification.WeatherAlertSettings
 import java.io.File
 import java.util.concurrent.atomic.AtomicReference
 import org.junit.Assert.assertNotEquals
@@ -40,6 +41,7 @@ class MainNavigationTest {
     @Test
     fun swipesFollowTabOrderAndRapidTapsFinishOnTheLastDestination() {
         val context = NavigationContext(compose.activity)
+        WeatherAlertSettings(backgroundAlertsAllowed = false).save(context)
         val repository = WeatherRepository(context)
         compose.setContent {
             CompositionLocalProvider(LocalContext provides context, LocalActivityResultRegistryOwner provides compose.activity) {

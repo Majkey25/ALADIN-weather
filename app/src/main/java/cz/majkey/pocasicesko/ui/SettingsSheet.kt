@@ -176,6 +176,8 @@ fun SettingsSheet(
                     }
                     SettingsPage.WIDGETS -> {
                         item {
+                            Text(stringResource(R.string.widget_background_disclosure),
+                                modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp))
                             OutlinedButton(
                                 onClick = onAddWidget,
                                 modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 4.dp)

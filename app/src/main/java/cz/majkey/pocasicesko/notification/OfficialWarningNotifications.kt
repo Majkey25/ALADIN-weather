@@ -25,7 +25,8 @@ internal object OfficialWarningNotifications {
         WeatherAlerts.ensureChannels(context)
         val manager = NotificationManagerCompat.from(context)
         val notificationId = WeatherAlerts.NOTIFICATION_ID_OFFICIAL
-        if (!WeatherAlertSettings.load(context).officialWarningsEnabled ||
+        val settings = WeatherAlertSettings.load(context)
+        if (!settings.backgroundAlertsAllowed || !settings.officialWarningsEnabled ||
             !WeatherAlerts.canPost(context, WeatherAlerts.CHANNEL_OFFICIAL)) {
             manager.cancel(notificationId)
             return

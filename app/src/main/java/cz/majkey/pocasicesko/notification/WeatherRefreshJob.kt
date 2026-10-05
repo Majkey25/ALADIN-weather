@@ -92,6 +92,7 @@ open class WeatherRefreshJob : JobService() {
         task = worker.submit {
             var retry = false
             try {
+                if (!hasWidgets && !WeatherAlertSettings.load(this).backgroundAlertsAllowed) return@submit
                 if (checkForecast) {
                     val repository = WeatherRepository(applicationContext)
                     val location = repository.lastLocation()
@@ -120,7 +121,7 @@ open class WeatherRefreshJob : JobService() {
                 }
             } finally {
                 // Warning checks must still run when the independent forecast provider is down.
-                if (checkAlerts && run == generation && !Thread.currentThread().isInterrupted &&
+                if (checkAlerts && WeatherAlertScheduler.enabled(this) && run == generation && !Thread.currentThread().isInterrupted &&
                     WeatherAlertSettings.load(this).officialWarningsEnabled) {
                     try {
                         val repository = WeatherRepository(applicationContext)

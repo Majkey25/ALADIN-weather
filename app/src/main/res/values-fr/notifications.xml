@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="notification_background_consent_title">Alertes météo en arrière-plan</string>
+    <string name="notification_background_disclosure">Autoriser Selia Weather à envoyer les coordonnées enregistrées à Open-Meteo, AviationWeather et ČÚZK/NWS pour les alertes et bulletins matinaux quand l’application est fermée ? Aucune nouvelle position n’est relevée. Ce choix est modifiable dans Notifications. Vos réglages sont conservés. Les widgets ajoutés se mettent à jour séparément.</string>
+    <string name="notification_background_allow">Autoriser</string>
+    <string name="notification_background_decline">Pas maintenant</string>
     <string name="notification_channel_blocked">Désactivé dans les paramètres Android</string>
     <string name="notifications">Notifications</string>
     <string name="notification_settings_summary">Alertes pour le dernier lieu sélectionné. Android peut retarder leur réception.</string>
-    <string name="notification_permission_summary">Android bloque les notifications. Vos préférences sont enregistrées.</string>
+    <string name="notification_permission_summary">Android bloque les notifications. Les autoriser permet à Selia Weather d’envoyer les coordonnées enregistrées à Open-Meteo, AviationWeather et ČÚZK/NWS pour la météo et les alertes quand l’application est fermée. Aucune nouvelle position n’est relevée. Vos préférences sont enregistrées.</string>
     <string name="notification_enable">Activer les notifications</string>
     <string name="notification_channel_settings">Paramètres Android pour %1$s</string>
     <string name="notification_rain">Pluie et parapluie</string>
@@ -33,7 +37,7 @@
     <string name="notification_wind_advice">Vers %1$s : vent ou rafales proches de %2$s prévus. Fixez les objets mobiles.</string>
     <string name="notification_uv_advice">Vers %1$s : indice UV %2$d prévu. Utilisez une protection solaire.</string>
     <string name="notification_background_delivery">Réception en arrière-plan</string>
-    <string name="notification_background_help">Les vérifications météo peuvent fonctionner avec l’application fermée. Android peut les retarder en veille ou en cas de restrictions de batterie. Autorisez l’activité en arrière-plan dans les réglages de batterie de l’application. Après un arrêt forcé, rouvrez l’application. Une heure précise de réception n’est pas garantie.</string>
+    <string name="notification_background_help">Les vérifications activées envoient les coordonnées enregistrées aux fournisseurs météo et d’alertes quand l’application est fermée ; elles ne relèvent pas une nouvelle position. Android peut les retarder en veille ou en cas de restrictions de batterie. Autorisez l’activité en arrière-plan dans les réglages de batterie de l’application. Après un arrêt forcé, rouvrez l’application. Une heure précise de réception n’est pas garantie.</string>
     <string name="notification_huawei_help">Huawei et Honor : ouvrez les paramètres de lancement dans les détails de consommation. Choisissez la gestion manuelle et autorisez le lancement automatique, le lancement secondaire et l’exécution en arrière-plan. Cela peut consommer davantage de batterie.</string>
     <string name="notification_morning_at">Chaque jour à %1$s</string>
     <string name="notification_morning_summary">Prévisions avant le travail ou l’école, avec conseils vêtements et parapluie.</string>

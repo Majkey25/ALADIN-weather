@@ -1,0 +1,1 @@
+Choisissez si les alertes et bulletins matinaux en arrière-plan peuvent utiliser les coordonnées enregistrées. Vos réglages sont conservés ; ce choix est modifiable dans Notifications. Les destinataires sont expliqués avant l’autorisation de localisation. Informations plus claires sur la confidentialité et la suppression des données.

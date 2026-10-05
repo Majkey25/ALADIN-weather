@@ -27,7 +27,8 @@ internal object WeatherAlertScheduler {
 
     fun enabled(context: Context): Boolean {
         val settings = WeatherAlertSettings.load(context)
-        return WeatherAlertCategory.entries.any { settings.isEnabled(it) && WeatherAlerts.canPost(context, it.channelId) }
+        return settings.backgroundAlertsAllowed &&
+            WeatherAlertCategory.entries.any { settings.isEnabled(it) && WeatherAlerts.canPost(context, it.channelId) }
     }
 
     fun sync(context: Context) {
@@ -53,7 +54,8 @@ internal object WeatherAlertScheduler {
         val manager = context.getSystemService(AlarmManager::class.java)
         val pending = PendingIntent.getBroadcast(context, 7100, Intent(context, WeatherAlertReceiver::class.java),
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
-        val trigger = snapshot?.takeIf { WeatherAlerts.canPost(context, WeatherAlertCategory.RAIN.channelId) }
+        val trigger = snapshot?.takeIf { WeatherAlertSettings.load(context).backgroundAlertsAllowed &&
+            WeatherAlerts.canPost(context, WeatherAlertCategory.RAIN.channelId) }
             ?.let { nextRainAlertTime(WeatherAlertSettings.load(context), it, now) }
         if (trigger == null) manager.cancel(pending)
         else DailyBriefingScheduler.setAlarm(context, trigger, pending)
@@ -62,6 +64,7 @@ internal object WeatherAlertScheduler {
 
 class WeatherAlertReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
+        if (!WeatherAlertSettings.load(context).backgroundAlertsAllowed) return
         val repository = WeatherRepository(context)
         val location = repository.lastLocation()
         repository.cachedForecast(location)?.let { WeatherAlerts.evaluateAndNotify(context, location, it) }

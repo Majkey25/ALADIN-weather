@@ -90,6 +90,7 @@ class StoreScreenshotsTest {
         val locale = Locale.forLanguageTag(tag)
         val configuration = Configuration(compose.activity.resources.configuration).apply { setLocale(locale) }
         val context = CaptureContext(compose.activity.createConfigurationContext(configuration))
+        cz.majkey.pocasicesko.notification.WeatherAlertSettings(backgroundAlertsAllowed = false).save(context)
         val location = CzechLocation(if (tag == "cs-CZ") "Praha" else "Prague", "", 50.0755, 14.4378, "CZ")
         val repository = WeatherRepository(context)
         repository.selectLocation(location)

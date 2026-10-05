@@ -1,0 +1,1 @@
+Zvolte, zda upozornění a ranní přehledy na pozadí mohou používat uložené souřadnice. Dosavadní nastavení zůstává uložené; volbu lze změnit v Oznámeních. Před oprávněním k poloze jsou vysvětleni příjemci souřadnic. Přehlednější informace o soukromí a mazání dat.
