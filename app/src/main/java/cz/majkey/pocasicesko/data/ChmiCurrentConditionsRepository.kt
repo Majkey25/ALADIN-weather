@@ -8,43 +8,66 @@ import java.net.URL
 import java.time.Instant
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
+import java.util.concurrent.Callable
+import java.util.concurrent.CancellationException
+import java.util.concurrent.ExecutionException
+import java.util.concurrent.Executors
 
-internal class ChmiCurrentConditionsRepository(context: Context) {
-    private val stations = context.assets.open(STATION_CATALOG_ASSET).bufferedReader().use { source ->
-        decodeCurrentStationCatalog(source.readText())
-    }
+internal class ChmiCurrentConditionsRepository(
+    private val stations: List<CurrentStation>,
+    private val fetchText: (CurrentStation, String) -> String = ::request,
+) {
+    constructor(context: Context) : this(
+        context.assets.open(STATION_CATALOG_ASSET).bufferedReader().use { source ->
+            decodeCurrentStationCatalog(source.readText())
+        },
+    )
 
     fun fetch(location: CzechLocation, now: Instant): List<CurrentStationObservation> {
+        ensureForecastThreadActive()
         val date = now.atZone(ZoneOffset.UTC).toLocalDate().format(DATE_FORMAT)
-        return buildList {
-            for (station in nearestCurrentStations(location, stations, REQUIRED_STATION_COUNT)) {
-                ensureForecastThreadActive()
-                val observation = runCatching {
-                    parseCurrentStationObservation(request(station, date), station)
-                }.getOrNull()
-                if (observation != null) add(observation)
-            }
-        }
-    }
-
-    private fun request(station: CurrentStation, date: String): String {
-        val url = "$CHMI_CURRENT_ROOT/10m-${station.stationId}-$date.json"
-        val connection = URL(url).openConnection() as HttpURLConnection
+        val worker = Executors.newFixedThreadPool(REQUIRED_STATION_COUNT)
         return try {
-            connection.connectTimeout = CONNECT_TIMEOUT_MILLIS
-            connection.readTimeout = READ_TIMEOUT_MILLIS
-            connection.setRequestProperty("Accept", "application/json")
-            connection.setRequestProperty("User-Agent", USER_AGENT)
-            if (connection.responseCode !in 200..299) {
-                throw IOException("ČHMÚ returned HTTP ${connection.responseCode}.")
-            }
-            connection.inputStream.use { readLimited(it, MAX_RESPONSE_BYTES).toString(Charsets.UTF_8) }
+            worker.invokeAll(nearestCurrentStations(location, stations, REQUIRED_STATION_COUNT).map { station ->
+                Callable {
+                    ensureForecastThreadActive()
+                    val observation = runCatching {
+                        parseCurrentStationObservation(fetchText(station, date), station)
+                    }.onFailure { error ->
+                        if (error is CancellationException) throw error
+                    }.getOrNull()
+                    ensureForecastThreadActive()
+                    observation
+                }
+            }).mapNotNull { it.get() }
+        } catch (error: InterruptedException) {
+            Thread.currentThread().interrupt()
+            throw CancellationException("Weather refresh interrupted.").apply { initCause(error) }
+        } catch (error: ExecutionException) {
+            throw error.cause ?: error
         } finally {
-            connection.disconnect()
+            worker.shutdownNow()
         }
     }
 
     companion object {
+        private fun request(station: CurrentStation, date: String): String {
+            val url = "$CHMI_CURRENT_ROOT/10m-${station.stationId}-$date.json"
+            val connection = URL(url).openConnection() as HttpURLConnection
+            return try {
+                connection.connectTimeout = CONNECT_TIMEOUT_MILLIS
+                connection.readTimeout = READ_TIMEOUT_MILLIS
+                connection.setRequestProperty("Accept", "application/json")
+                connection.setRequestProperty("User-Agent", USER_AGENT)
+                if (connection.responseCode !in 200..299) {
+                    throw IOException("ČHMÚ returned HTTP ${connection.responseCode}.")
+                }
+                connection.inputStream.use { readLimited(it, MAX_RESPONSE_BYTES).toString(Charsets.UTF_8) }
+            } finally {
+                connection.disconnect()
+            }
+        }
+
         private const val STATION_CATALOG_ASSET = "chmi_current_stations.json"
         private const val CHMI_CURRENT_ROOT = "https://opendata.chmi.cz/meteorology/climate/now/data"
         private const val REQUIRED_STATION_COUNT = 3
