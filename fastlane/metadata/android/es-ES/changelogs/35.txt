@@ -1,0 +1,1 @@
+Elige si los avisos y resúmenes matinales en segundo plano pueden usar coordenadas guardadas. Los ajustes se conservan; puedes cambiarlo en Notificaciones. Se explican los destinatarios antes del permiso de ubicación. Información más clara sobre privacidad y eliminación de datos.

@@ -1,0 +1,1 @@
+Wählen Sie, ob Hintergrundhinweise und Morgenberichte gespeicherte Koordinaten nutzen dürfen. Bisherige Einstellungen bleiben erhalten; die Auswahl ist unter Benachrichtigungen änderbar. Empfänger werden vor der Standortfreigabe erklärt. Klarere Hinweise zu Datenschutz und Datenlöschung.

@@ -14,6 +14,7 @@ enum class WeatherAlertCategory(val channelId: String, val notificationId: Int, 
 }
 
 data class WeatherAlertSettings(
+    val backgroundAlertsAllowed: Boolean = false,
     val rainEnabled: Boolean = true,
     val coldEnabled: Boolean = false,
     val dropEnabled: Boolean = false,
@@ -66,6 +67,7 @@ data class WeatherAlertSettings(
     fun save(context: Context) {
         val settings = normalized()
         val editor = context.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE).edit()
+        editor.putBoolean(BACKGROUND_ALERTS_ALLOWED, settings.backgroundAlertsAllowed)
         WeatherAlertCategory.entries.forEach { editor.putBoolean(it.channelId, settings.isEnabled(it)) }
         editor.putFloat("cold_celsius", settings.coldCelsius.toFloat())
             .putFloat("drop_celsius", settings.dropCelsius.toFloat())
@@ -83,6 +85,7 @@ data class WeatherAlertSettings(
         fun load(context: Context): WeatherAlertSettings {
             val preferences = context.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)
             return WeatherAlertSettings(
+                backgroundAlertsAllowed = preferences.getBoolean(BACKGROUND_ALERTS_ALLOWED, false),
                 rainEnabled = preferences.getBoolean(WeatherAlertCategory.RAIN.channelId, true),
                 coldEnabled = preferences.getBoolean(WeatherAlertCategory.COLD.channelId, false),
                 dropEnabled = preferences.getBoolean(WeatherAlertCategory.DROP.channelId, false),
@@ -102,5 +105,9 @@ data class WeatherAlertSettings(
         }
 
         private const val PREFERENCES = "weather_alert_settings"
+        private const val BACKGROUND_ALERTS_ALLOWED = "background_alerts_allowed"
+
+        fun needsBackgroundDisclosure(context: Context): Boolean =
+            !context.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE).contains(BACKGROUND_ALERTS_ALLOWED)
     }
 }

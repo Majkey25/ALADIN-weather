@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="notification_background_consent_title">Upozornění na počasí na pozadí</string>
+    <string name="notification_background_disclosure">Povolit aplikaci Selia Weather odesílání uložených souřadnic službám Open-Meteo, AviationWeather a ČÚZK/NWS pro upozornění a ranní přehledy i při zavřené aplikaci? Novou polohu zařízení nezjišťuje. Volbu můžete změnit v Oznámeních. Nastavení upozornění zůstane uložené. Přidané widgety se aktualizují samostatně.</string>
+    <string name="notification_background_allow">Povolit</string>
+    <string name="notification_background_decline">Teď ne</string>
     <string name="notification_channel_blocked">Vypnuto v nastavení Androidu</string>
     <string name="notifications">Oznámení</string>
     <string name="notification_settings_summary">Upozornění pro poslední vybrané místo. Android může doručení zpozdit.</string>
-    <string name="notification_permission_summary">Android blokuje oznámení. Vaše nastavení upozornění je uložené.</string>
+    <string name="notification_permission_summary">Android blokuje oznámení. Po povolení může Selia Weather odesílat uložené souřadnice službám Open-Meteo, AviationWeather a ČÚZK/NWS pro počasí a výstrahy i při zavřené aplikaci. Novou polohu zařízení nezjišťuje. Vaše nastavení upozornění je uložené.</string>
     <string name="notification_enable">Povolit oznámení</string>
     <string name="notification_channel_settings">Nastavení Androidu pro %1$s</string>
     <string name="notification_rain">Déšť a deštník</string>
@@ -33,7 +37,7 @@
     <string name="notification_wind_advice">Kolem %1$s se očekává vítr nebo nárazy okolo %2$s. Zajistěte volné předměty.</string>
     <string name="notification_uv_advice">Kolem %1$s se očekává UV index %2$d. Použijte ochranu před sluncem.</string>
     <string name="notification_background_delivery">Doručování na pozadí</string>
-    <string name="notification_background_help">Kontroly počasí mohou běžet i při zavřené aplikaci. Android je může odložit při uspání nebo omezení baterie. V nastavení baterie aplikace povolte běh na pozadí. Po vynuceném zastavení aplikaci znovu otevřete. Přesný čas doručení není zaručen.</string>
+    <string name="notification_background_help">Zapnuté kontroly počasí odesílají uložené souřadnice poskytovatelům počasí a výstrah i při zavřené aplikaci; novou polohu zařízení nezjišťují. Android je může odložit při uspání nebo omezení baterie. V nastavení baterie aplikace povolte běh na pozadí. Po vynuceném zastavení aplikaci znovu otevřete. Přesný čas doručení není zaručen.</string>
     <string name="notification_huawei_help">Huawei a Honor: v podrobnostech spotřeby otevřete nastavení spouštění. Zvolte ruční správu a povolte automatické spuštění, sekundární spuštění a běh na pozadí. Spotřeba baterie se může zvýšit.</string>
     <string name="notification_morning_at">Každý den v %1$s</string>
     <string name="notification_morning_summary">Předpověď před prací nebo školou s doporučením oblečení a deštníku.</string>

@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="notification_background_consent_title">Background weather alerts</string>
+    <string name="notification_background_disclosure">Allow Selia Weather to send saved coordinates to Open-Meteo, AviationWeather and ČÚZK/NWS for weather alerts and morning briefings while the app is closed? It does not read a new device location. You can change this in Notifications. Your saved alert choices are kept. Widgets you add refresh separately.</string>
+    <string name="notification_background_allow">Allow</string>
+    <string name="notification_background_decline">Not now</string>
     <string name="notifications">Notifications</string>
     <string name="notification_settings_summary">Alerts for the last selected place. Android may delay delivery.</string>
     <string name="notification_channel_blocked">Disabled in Android settings</string>
-    <string name="notification_permission_summary">Android notifications are blocked. Your alert preferences are saved.</string>
+    <string name="notification_permission_summary">Android notifications are blocked. Enabling them lets Selia Weather send saved coordinates to Open-Meteo, AviationWeather and ČÚZK/NWS for weather and warnings with the app closed. No new device location is read. Your alert preferences are saved.</string>
     <string name="notification_enable">Enable notifications</string>
     <string name="notification_channel_settings">Android settings for %1$s</string>
     <string name="notification_rain">Rain and umbrella</string>
@@ -33,7 +37,7 @@
     <string name="notification_wind_advice">Around %1$s: wind or gusts near %2$s expected. Secure loose items.</string>
     <string name="notification_uv_advice">Around %1$s: UV index %2$d expected. Use sun protection.</string>
     <string name="notification_background_delivery">Background delivery</string>
-    <string name="notification_background_help">Weather checks can run with the app closed. Android may delay them during sleep or battery restrictions. Allow background activity in the app battery settings. After Force stop, reopen the app. Delivery is not guaranteed at an exact time.</string>
+    <string name="notification_background_help">Enabled weather checks send your saved coordinates to weather and warning providers with the app closed; they do not read a new device location. Android may delay them during sleep or battery restrictions. Allow background activity in the app battery settings. After Force stop, reopen the app. Delivery is not guaranteed at an exact time.</string>
     <string name="notification_huawei_help">Huawei and Honor: in Power usage details, open Launch settings. Choose manual management and allow Auto-launch, Secondary launch and Run in background. This may use more battery.</string>
     <string name="notification_morning_at">Every day at %1$s</string>
     <string name="notification_morning_summary">A forecast before work or school, with clothing and umbrella advice.</string>

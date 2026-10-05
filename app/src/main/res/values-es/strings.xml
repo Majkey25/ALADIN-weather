@@ -118,7 +118,7 @@
     <string name="wind_value">%1$s km/h</string>
     <string name="locations">Ubicaciones</string>
     <string name="use_my_location">Usar mi ubicación</string>
-    <string name="location_purpose">La ubicación se usa para mostrar el tiempo local.</string>
+    <string name="location_purpose">Selia Weather envía las coordenadas elegidas a Open-Meteo, AviationWeather y ČÚZK/NWS para el tiempo y las alertas, y a Android Geocoder para nombrar el lugar. Los widgets y avisos activados pueden reutilizarlas con la app cerrada. No se rastrean tus movimientos.</string>
     <string name="choose_point_on_map">Elegir punto en el mapa</string>
     <string name="pinned_location_purpose">Guarda un punto exacto, como un campo.</string>
     <string name="pinned_location_title">Punto exacto</string>
@@ -219,6 +219,7 @@
     <string name="radar_unavailable">Radar no disponible</string>
     <string name="widget_title">Widget del tiempo</string>
     <string name="widget_add">Añadir widget a la pantalla de inicio</string>
+    <string name="widget_background_disclosure">Los widgets envían la ubicación guardada a Open-Meteo y AviationWeather al actualizarse, incluso con la app cerrada. No obtienen una nueva ubicación. Elimina el widget para detener sus actualizaciones.</string>
     <string name="widget_add_unavailable">Este lanzador no puede añadir el widget automáticamente.</string>
     <string name="widget_preview_description">Vista previa del widget del tiempo</string>
     <string name="widget_size_compact">Compacto</string>

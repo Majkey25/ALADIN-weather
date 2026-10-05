@@ -128,7 +128,7 @@ object WeatherAlerts {
 
     fun cancelDisabled(context: Context, settings: WeatherAlertSettings = WeatherAlertSettings.load(context)) {
         val manager = NotificationManagerCompat.from(context)
-        WeatherAlertCategory.entries.filter { !settings.isEnabled(it) || !canPost(context, it.channelId) }
+        WeatherAlertCategory.entries.filter { !settings.backgroundAlertsAllowed || !settings.isEnabled(it) || !canPost(context, it.channelId) }
             .forEach { manager.cancel(it.notificationId) }
     }
 
@@ -138,6 +138,7 @@ object WeatherAlerts {
         val now = System.currentTimeMillis()
         val settings = WeatherAlertSettings.load(context)
         cancelDisabled(context, settings)
+        if (!settings.backgroundAlertsAllowed) return
         val alerts = forecastAlerts(settings, snapshot, now)
         WeatherAlertScheduler.scheduleRainCheck(context, snapshot, now)
         val manager = NotificationManagerCompat.from(context)
@@ -148,7 +149,8 @@ object WeatherAlerts {
         val zone = forecastAlertZone(snapshot) ?: return
         alerts.forEach { alert ->
             val category = alert.category
-            if (!WeatherAlertSettings.load(context).isEnabled(category) || !canPost(context, category.channelId)) return@forEach
+            val current = WeatherAlertSettings.load(context)
+            if (!current.backgroundAlertsAllowed || !current.isEnabled(category) || !canPost(context, category.channelId)) return@forEach
             val key = "${location.latitude},${location.longitude}|${alert.validAtEpochMillis}"
             if (!shouldPostWeatherAlert(preferences.getString(category.channelId, null),
                 preferences.getLong("${category.channelId}_posted_at", 0), key, now)) return@forEach
