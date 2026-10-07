@@ -1,0 +1,4 @@
+Dégradés doux, icônes de contour et prévisions horaires plus claires.
+Thèmes clairs/sombres indépendants, couleurs HEX, polices et taille du texte.
+Chaque jour/heure affiche la confiance des prévisions. Les détails expliquent l’accord des modèles et les limites. Une estimation, pas une probabilité de précision.
+Les widgets au style de l’app et les commandes du radar suivent votre apparence.

@@ -211,7 +211,7 @@ internal fun WeatherDetailSheet(
             ) {
                 if (initialHistory) {
                     item {
-                        Text(stringResource(R.string.history_ai_intro), color = Color(0xFFB7CBD3),
+                        Text(stringResource(R.string.history_ai_intro), color = MaterialTheme.colorScheme.onSurfaceVariant,
                             fontSize = 15.sp, lineHeight = 22.sp)
                     }
                     item {
@@ -347,7 +347,7 @@ internal fun WeatherDetailSheet(
                                     modifier = Modifier
                                         .size(42.dp)
                                         .rotate(snapshot.current.windDirection.toFloat()),
-                                    tint = Color(0xFF83D6E8),
+                                    tint = MaterialTheme.colorScheme.primary,
                                 )
                                 Column(Modifier.padding(start = 14.dp)) {
                                     Text(
@@ -358,7 +358,7 @@ internal fun WeatherDetailSheet(
                                     Text(
                                         "${stringResource(windDirectionResource(snapshot.current.windDirection))} · " +
                                             "${snapshot.current.windDirection}°",
-                                        color = Color.White.copy(alpha = 0.58f),
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                                     )
                                 }
                             }
@@ -544,8 +544,8 @@ private fun WeatherDetailContainer(
     } else {
         ModalBottomSheet(
             onDismissRequest = onDismiss,
-            containerColor = Color(0xFF101820),
-            contentColor = Color.White,
+            containerColor = MaterialTheme.colorScheme.surface,
+            contentColor = MaterialTheme.colorScheme.onSurface,
             sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
         ) { content() }
     }
@@ -664,7 +664,7 @@ private fun ForecastCalculationSection(calculation: ForecastCalculation) {
         }
         Text(
             stringResource(R.string.forecast_calculation_contributors),
-            color = Color.White.copy(alpha = 0.62f),
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.padding(top = 11.dp),
         )
         Text(
@@ -682,7 +682,7 @@ private fun ForecastCalculationSection(calculation: ForecastCalculation) {
         }
         Text(
             stringResource(R.string.forecast_calculation_note),
-            color = Color.White.copy(alpha = 0.48f),
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
             fontSize = 11.sp,
             modifier = Modifier.padding(top = 10.dp),
         )
@@ -721,7 +721,7 @@ private fun HistoryArchiveSection(
             HistoryUiState.Idle -> {
                 Text(
                     stringResource(R.string.history_description),
-                    color = Color.White.copy(alpha = 0.62f),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(vertical = 8.dp),
                 )
                 Button(
@@ -730,8 +730,8 @@ private fun HistoryArchiveSection(
                         .fillMaxWidth()
                         .padding(top = 8.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFF83D6E8),
-                        contentColor = Color(0xFF0D151C),
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        contentColor = MaterialTheme.colorScheme.onPrimary,
                     ),
                 ) {
                     Icon(Icons.Rounded.History, contentDescription = null, modifier = Modifier.size(20.dp))
@@ -746,7 +746,7 @@ private fun HistoryArchiveSection(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
             ) {
-                CircularProgressIndicator(color = Color(0xFF83D6E8), modifier = Modifier.size(32.dp))
+                CircularProgressIndicator(color = MaterialTheme.colorScheme.primary, modifier = Modifier.size(32.dp))
                 Text(stringResource(R.string.history_loading_archive))
             }
             HistoryUiState.Error -> Row(
@@ -757,7 +757,7 @@ private fun HistoryArchiveSection(
             ) {
                 Text(
                     stringResource(R.string.history_unavailable),
-                    color = Color.White.copy(alpha = 0.62f),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.weight(1f),
                 )
                 TextButton(onClick = onLoad) { Text(stringResource(R.string.retry)) }
@@ -807,8 +807,8 @@ private fun HistoryArchiveSection(
                         .fillMaxWidth()
                         .padding(top = 12.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFF83D6E8),
-                        contentColor = Color(0xFF0D151C),
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        contentColor = MaterialTheme.colorScheme.onPrimary,
                     ),
                 ) {
                     Icon(painterResource(R.drawable.ic_ai), contentDescription = null, modifier = Modifier.size(24.dp))
@@ -817,24 +817,24 @@ private fun HistoryArchiveSection(
                 }
                 Text(
                     stringResource(R.string.history_ai_share_note, archive.days.size),
-                    color = Color.White.copy(alpha = 0.62f),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     fontSize = 12.sp,
                     modifier = Modifier.padding(top = 6.dp),
                 )
                 if (shareError) {
                     Text(
                         stringResource(R.string.history_share_failed),
-                        color = Color(0xFFFFB4AB),
+                        color = MaterialTheme.colorScheme.error,
                         modifier = Modifier.padding(top = 8.dp),
                     )
                 }
                 DetailSection(stringResource(R.string.detail_group_sources), collapsible = true) {
-                    Text(stringResource(R.string.history_source_note), color = Color(0xFFB7CBD3),
+                    Text(stringResource(R.string.history_source_note), color = MaterialTheme.colorScheme.onSurfaceVariant,
                         fontSize = 13.sp, lineHeight = 20.sp)
                 }
                 Text(
                     stringResource(R.string.history_dates_coverage, summary?.dayCount ?: 0, ChronoUnit.DAYS.between(range.start, range.endInclusive) + 1),
-                    color = Color.White.copy(alpha = 0.62f),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     fontSize = 12.sp,
                 )
                 if (summary == null) {
@@ -853,7 +853,7 @@ private fun HistoryArchiveSection(
                             Modifier.weight(1f),
                         )
                     }
-                    HorizontalDivider(color = Color.White.copy(alpha = 0.07f))
+                    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
                     Row(Modifier.fillMaxWidth()) {
                         GlanceValue(
                             stringResource(R.string.history_average_temperature) + " · " +
@@ -965,7 +965,7 @@ private fun HistoricalDayRow(
                 Text(day.date.format(dateFormatter), fontWeight = FontWeight.Medium)
                 Text(
                     historicalTemperatureRange(day.temperatureMinimumC, day.temperatureMaximumC, units, unavailable),
-                    color = Color.White.copy(alpha = 0.58f),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     fontSize = 12.sp,
                 )
             }
@@ -974,7 +974,7 @@ private fun HistoricalDayRow(
                 day.solarEnergyMegajoulesPerSquareMeter?.let {
                     Text(
                         String.format(locale, "%.1f MJ/m²", it),
-                        color = Color.White.copy(alpha = 0.48f),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         fontSize = 11.sp,
                     )
                 }
@@ -982,14 +982,14 @@ private fun HistoricalDayRow(
             Icon(
                 if (expanded) Icons.Rounded.ExpandLess else Icons.Rounded.ExpandMore,
                 contentDescription = null,
-                tint = Color.White.copy(alpha = 0.48f),
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(start = 8.dp).size(20.dp),
             )
         }
         if (expanded) historicalDayMetrics(day, units, locale).forEach { metric ->
             DetailRow(stringResource(metric.label), metric.value ?: unavailable, historicalMetricIcon(metric.label))
         }
-        HorizontalDivider(color = Color.White.copy(alpha = 0.07f))
+        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
     }
 }
 
@@ -1050,7 +1050,7 @@ private fun AtAGlanceSection(
                 Modifier.weight(1f),
             )
         }
-        HorizontalDivider(color = Color.White.copy(alpha = 0.07f))
+        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
         Row(Modifier.fillMaxWidth()) {
             GlanceValue(
                 stringResource(R.string.uv_index_max),
@@ -1071,7 +1071,7 @@ private fun AtAGlanceSection(
 @Composable
 private fun GlanceValue(label: String, value: String, modifier: Modifier = Modifier) {
     Column(modifier.padding(vertical = 12.dp, horizontal = 2.dp)) {
-        Text(label, color = Color.White.copy(alpha = 0.55f), fontSize = 11.sp)
+        Text(label, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp)
         Text(
             value,
             fontWeight = FontWeight.SemiBold,
@@ -1118,7 +1118,7 @@ private fun MoonSection(moon: MoonDetails?, locale: java.util.Locale) {
         if (moon == null) {
             Text(
                 stringResource(R.string.unavailable),
-                color = Color.White.copy(alpha = 0.58f),
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(vertical = 12.dp),
             )
             return@DetailSection
@@ -1143,11 +1143,11 @@ private fun MoonSection(moon: MoonDetails?, locale: java.util.Locale) {
                         R.string.moon_illumination_value,
                         (moon.illuminatedFraction * 100).roundToInt(),
                     ),
-                    color = Color.White.copy(alpha = 0.68f),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
                 Text(
                     stringResource(if (moon.waxing) R.string.moon_waxing else R.string.moon_waning),
-                    color = Color.White.copy(alpha = 0.68f),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
         }
@@ -1159,7 +1159,7 @@ private fun MoonSection(moon: MoonDetails?, locale: java.util.Locale) {
         DetailRow(stringResource(R.string.next_full_moon), moon.nextFullMoon.formatFor(locale))
         Text(
             stringResource(R.string.moon_accuracy_note),
-            color = Color.White.copy(alpha = 0.48f),
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
             fontSize = 11.sp,
             modifier = Modifier.padding(top = 10.dp),
         )
@@ -1181,7 +1181,7 @@ private fun DetailSection(title: String, collapsible: Boolean = false, content: 
                 Text(title, fontSize = 18.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.weight(1f))
                 Icon(if (expanded) Icons.Rounded.ExpandLess else Icons.Rounded.ExpandMore, contentDescription = null)
             }
-            HorizontalDivider(color = Color.White.copy(alpha = 0.07f))
+            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
         } else {
             Text(title, fontSize = 20.sp, fontWeight = FontWeight.SemiBold)
         }
@@ -1201,13 +1201,13 @@ private fun DetailRow(label: String, value: String, icon: ImageVector? = null) {
         verticalAlignment = Alignment.CenterVertically,
     ) {
         icon?.let {
-            Icon(it, contentDescription = null, tint = Color(0xFF83D6E8), modifier = Modifier.size(18.dp))
+            Icon(it, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(18.dp))
             Spacer(Modifier.width(10.dp))
         }
-        Text(label, color = Color.White.copy(alpha = 0.62f), modifier = Modifier.weight(1f))
+        Text(label, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.weight(1f))
         Text(value, fontWeight = FontWeight.Medium)
     }
-    HorizontalDivider(color = Color.White.copy(alpha = 0.07f))
+    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
 }
 
 @Composable

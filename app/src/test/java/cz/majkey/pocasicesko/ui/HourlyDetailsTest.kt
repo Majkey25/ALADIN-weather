@@ -265,7 +265,7 @@ class HourlyDetailsTest {
         assertFalse(source.contains("R.string.hourly_model_disagreement"))
         assertFalse(source.contains("R.string.hourly_source_precipitation_summary"))
         assertTrue(source.contains("conditionFor(hour.weatherCode, hour.isDay)"))
-        assertTrue(source.contains("shape = RoundedCornerShape(16.dp)"))
+        assertTrue(source.contains("shape = MaterialTheme.shapes.medium"))
         assertTrue(source.substringAfter("if (showPrecipitationHelp) {")
             .contains("R.string.hourly_precipitation_models"))
     }

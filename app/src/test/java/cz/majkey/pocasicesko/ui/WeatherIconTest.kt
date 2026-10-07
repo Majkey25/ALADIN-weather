@@ -31,9 +31,9 @@ class WeatherIconTest {
         ).readText()
 
         assertTrue(source.contains("kind == WeatherKind.MAINLY_CLEAR"))
-        assertTrue(source.contains("Icons.Rounded.WbSunny"))
-        assertTrue(source.contains("Icons.Rounded.DarkMode"))
-        assertTrue(source.contains("Icons.Rounded.Cloud"))
+        assertTrue(source.contains("Icons.Outlined.WbSunny"))
+        assertTrue(source.contains("Icons.Outlined.DarkMode"))
+        assertTrue(source.contains("Icons.Outlined.Cloud"))
     }
 
     @Test

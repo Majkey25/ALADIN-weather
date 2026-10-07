@@ -74,20 +74,20 @@ internal fun WarningsAction(result: WeatherWarningsResult?, onClick: () -> Unit)
     Surface(
         onClick = onClick,
         modifier = Modifier.fillMaxWidth(),
-        color = Color(0xA61A252E),
-        shape = RoundedCornerShape(22.dp),
-        border = BorderStroke(1.dp, Color.White.copy(alpha = 0.09f)),
+        color = MaterialTheme.colorScheme.surface,
+        shape = MaterialTheme.shapes.large,
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
     ) {
         Row(Modifier.heightIn(min = 56.dp).padding(horizontal = 16.dp, vertical = 12.dp),
             verticalAlignment = Alignment.CenterVertically) {
             Icon(Icons.Rounded.WarningAmber, contentDescription = null, modifier = Modifier.padding(end = 12.dp).size(22.dp),
-                tint = if (severe) MaterialTheme.colorScheme.error else Color.White)
+                tint = if (severe) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface)
             Column(Modifier.weight(1f)) {
                 Text(stringResource(R.string.warnings_title), fontWeight = FontWeight.SemiBold)
-                Text(summary, fontSize = 12.sp, color = Color.White.copy(alpha = 0.72f))
+                Text(summary, fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
             Icon(Icons.AutoMirrored.Rounded.KeyboardArrowRight, contentDescription = null,
-                tint = Color.White.copy(alpha = 0.58f))
+                tint = MaterialTheme.colorScheme.onSurfaceVariant)
         }
     }
 }
@@ -110,8 +110,8 @@ internal fun WeatherWarningsSheet(
     val warnings = result?.takeIf { it.status == WeatherWarningsStatus.AVAILABLE }?.warnings.orEmpty()
     ModalBottomSheet(
         onDismissRequest = onDismiss,
-        containerColor = Color(0xFF101820),
-        contentColor = Color.White,
+        containerColor = MaterialTheme.colorScheme.surface,
+        contentColor = MaterialTheme.colorScheme.onSurface,
         sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
     ) {
         Column(Modifier.fillMaxWidth().fillMaxHeight().navigationBarsPadding()) {
@@ -127,7 +127,7 @@ internal fun WeatherWarningsSheet(
                             Text(result?.sourceName ?: stringResource(R.string.warnings_official_sources), fontWeight = FontWeight.SemiBold)
                             result?.let {
                                 Text(stringResource(R.string.warnings_checked, formatter.format(it.checkedAt)),
-                                    fontSize = 12.sp, color = Color.White.copy(alpha = 0.72f))
+                                    fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                             }
                         }
                         IconButton(onClick = onRefresh, enabled = !refreshing,
@@ -156,7 +156,7 @@ internal fun WeatherWarningsSheet(
                 }
                 items(warnings, key = { it.id }) { warning ->
                     WarningRow(warning, formatter, onOpenSource)
-                    HorizontalDivider(Modifier.padding(top = 12.dp), color = Color.White.copy(alpha = 0.12f))
+                    HorizontalDivider(Modifier.padding(top = 12.dp), color = MaterialTheme.colorScheme.outlineVariant)
                 }
             }
         }
@@ -178,13 +178,13 @@ private fun WarningRow(warning: WeatherWarning, formatter: DateTimeFormatter, on
         ) {
             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
                 Text(stringResource(warning.severity.labelResource()), fontSize = 12.sp, fontWeight = FontWeight.SemiBold,
-                    color = if (warning.severity >= WeatherWarningSeverity.SEVERE) MaterialTheme.colorScheme.error else Color.White.copy(alpha = 0.78f))
+                    color = if (warning.severity >= WeatherWarningSeverity.SEVERE) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant)
                 Text(warning.headline, fontWeight = FontWeight.SemiBold, fontSize = 17.sp, lineHeight = 24.sp)
             }
             Icon(if (expanded) Icons.Rounded.ExpandLess else Icons.Rounded.ExpandMore,
                 contentDescription = null, modifier = Modifier.padding(start = 12.dp))
         }
-        Text(warning.source, fontSize = 13.sp, color = Color.White.copy(alpha = 0.72f))
+        Text(warning.source, fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
         warning.onset?.let { Text(stringResource(R.string.warnings_from, formatter.format(it)), fontSize = 13.sp) }
         warning.expires?.let { Text(stringResource(R.string.warnings_until, formatter.format(it)), fontSize = 13.sp) }
         if (expanded) {

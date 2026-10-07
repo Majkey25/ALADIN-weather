@@ -34,8 +34,8 @@ class WeatherChromeTest {
 
         assertFalse(item.contains("else Color.Transparent"))
         assertTrue(item.contains("contentColor ="))
-        assertTrue(item.contains("Color(0xFF2E6474)"))
-        assertTrue(item.contains("Color(0xFF142731)"))
+        assertTrue(item.contains("MaterialTheme.colorScheme.primary"))
+        assertTrue(item.contains("MaterialTheme.colorScheme.surface"))
     }
 
     @Test
