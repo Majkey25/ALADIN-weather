@@ -10,6 +10,46 @@ import java.time.Instant
 
 class ModelConsensusTest {
     @Test
+    fun hourlyAgreementUsesActualCompleteContributorsAndSurvivesJson() {
+        val hourly = JSONObject(blendModelForecast(BASE, MODELS).json).getJSONObject("hourly")
+        val first = requireNotNull(hourly.getJSONArray(MODEL_AGREEMENT_KEY).getJSONObject(0).modelAgreementOrNull())
+        assertEquals(3, first.modelCount)
+        assertEquals(20.0, first.temperatureRangeCelsius, 0.0)
+        assertEquals(20.0, first.cloudRangePercent, 0.0)
+        assertEquals(2, first.agreeingConditionCount)
+        assertEquals(WeatherKind.CLEAR, first.dominantCondition)
+        assertEquals(0, first.wetModelCount)
+        assertTrue(first.windRangeKmh in 3.4..3.6)
+        assertEquals(first, first.toJson().modelAgreementOrNull())
+    }
+
+    @Test
+    fun missingComparisonFieldsDoNotBorrowGlobalContributorCounts() {
+        val models = JSONObject(MODELS)
+        models.getJSONObject("hourly").remove("cloud_cover_c")
+        val hourly = JSONObject(blendModelForecast(BASE, models.toString()).json).getJSONObject("hourly")
+        assertTrue(hourly.getJSONArray(MODEL_AGREEMENT_KEY).isNull(0))
+        assertEquals(22.0, hourly.getJSONArray("temperature_2m").getDouble(0), 0.0)
+    }
+
+    @Test
+    fun partialInputsThatInfluenceTheBlendCannotBeHiddenFromConfidence() {
+        val models = JSONObject(MODELS)
+        val source = models.getJSONObject("hourly")
+        source.put("temperature_2m_d", org.json.JSONArray().put(100.0).put(100.0))
+        val hourly = JSONObject(blendModelForecast(BASE, models.toString()).json).getJSONObject("hourly")
+        assertEquals(31.0, hourly.getJSONArray("temperature_2m").getDouble(0), 0.0)
+        assertTrue(hourly.getJSONArray(MODEL_AGREEMENT_KEY).isNull(0))
+    }
+
+    @Test
+    fun staticCalibrationDoesNotClaimAgreementFromDifferentLiveRuns() {
+        val result = issuedBlend(issuedValues())
+        assertTrue(result.calibratedValueCount > 0)
+        val hourly = JSONObject(result.json).getJSONObject("hourly")
+        assertTrue(hourly.getJSONArray(MODEL_AGREEMENT_KEY).isNull(0))
+    }
+    @Test
     fun dryMedianCannotEraseRegionalRainWhileMinorityEvidenceRemainsVisible() {
         val base = precipitationBase().also {
             it.getJSONObject("hourly").getJSONArray("precipitation").put(0, 0.3)

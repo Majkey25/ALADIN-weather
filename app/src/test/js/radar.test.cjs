@@ -22,7 +22,7 @@ function runtime(response = manifest(), search = '?lat=50&lon=14') {
   let timerId = 0;
   const document = {
     hidden: false,
-    documentElement: { style: {} },
+    documentElement: { style: { setProperty(key, value) { this[key] = value; } } },
     body: { style: {} },
     getElementById(id) {
       if (!nodes.has(id)) nodes.set(id, { style: {}, setAttribute(key, value) { this[key] = value; } });
@@ -76,6 +76,19 @@ function runtime(response = manifest(), search = '?lat=50&lon=14') {
   return { context, document, events, layers, timeouts, timeoutDelays, intervals, removed, node: id => document.getElementById(id) };
 }
 const settled = () => new Promise(resolve => setImmediate(resolve));
+
+test('appearance changes update only CSS roles and keep radar state', async () => {
+  const app = runtime();
+  await settled();
+  const layers = app.layers.length;
+  const index = app.context.frameIndex;
+  app.context.window.setAppearance({ bg: '#FFFFFF', text: '#17222B', accent: '#386A82', surface: 'url(https://bad.invalid/)' });
+  assert.equal(app.document.documentElement.style['--bg'], '#FFFFFF');
+  assert.equal(app.document.documentElement.style['--text'], '#17222B');
+  assert.equal(app.document.documentElement.style['--surface'], undefined);
+  assert.equal(app.layers.length, layers);
+  assert.equal(app.context.frameIndex, index);
+});
 
 function scrubTimeline(app, values) {
   const input = html.match(/id="slider"[^>]*oninput="([^"]+)"/)[1];

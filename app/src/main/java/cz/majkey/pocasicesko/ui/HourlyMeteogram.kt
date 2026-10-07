@@ -1,11 +1,11 @@
 package cz.majkey.pocasicesko.ui
 
 import androidx.compose.foundation.Canvas
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
@@ -30,10 +30,12 @@ internal data class HourlyMeteogramGeometry(
 internal fun HourlyMeteogram(
     hours: List<HourlyWeather>,
     columnWidth: Dp,
-    accent: Color,
     modifier: Modifier = Modifier,
     precipitationHours: List<HourlyWeather?> = hours,
 ) {
+    val lineColor = MaterialTheme.colorScheme.primary
+    val surfaceColor = MaterialTheme.colorScheme.surface
+    val dividerColor = MaterialTheme.colorScheme.outlineVariant
     Canvas(modifier.clearAndSetSemantics { }) {
         if (hours.isEmpty() || size.width <= 0f || size.height <= 0f) return@Canvas
         val geometry = calculateHourlyMeteogram(
@@ -46,7 +48,7 @@ internal fun HourlyMeteogram(
         val columnWidthPx = columnWidth.toPx()
         val precipitationBaseline = size.height * 0.96f
         drawLine(
-            color = Color.White.copy(alpha = 0.08f),
+            color = dividerColor,
             start = Offset(0f, precipitationBaseline),
             end = Offset(size.width, precipitationBaseline),
             strokeWidth = 1.dp.toPx(),
@@ -55,7 +57,7 @@ internal fun HourlyMeteogram(
             if (hour.precipitationHeight > 0f) {
                 val barWidth = columnWidthPx * 0.38f
                 drawRect(
-                    color = PRECIPITATION_COLOR.copy(alpha = hour.precipitationAlpha),
+                    color = lineColor.copy(alpha = hour.precipitationAlpha),
                     topLeft = Offset(
                         hour.centerX - barWidth / 2f,
                         precipitationBaseline - hour.precipitationHeight,
@@ -73,18 +75,16 @@ internal fun HourlyMeteogram(
         }
         drawPath(
             path = path,
-            brush = Brush.horizontalGradient(
-                listOf(Color(0xFF58C8E2), accent, Color(0xFFFFC468)),
-            ),
-            style = Stroke(width = 3.dp.toPx(), cap = StrokeCap.Round),
+            color = lineColor,
+            style = Stroke(width = 1.7.dp.toPx(), cap = StrokeCap.Round),
         )
         geometry.hours.forEach { hour ->
             drawCircle(
-                color = Color(0xFF111B24),
-                radius = 4.5.dp.toPx(),
+                color = surfaceColor,
+                radius = 3.dp.toPx(),
                 center = Offset(hour.centerX, hour.temperatureY),
             )
-            drawCircle(accent, radius = 2.4.dp.toPx(), center = Offset(hour.centerX, hour.temperatureY))
+            drawCircle(lineColor, radius = 1.5.dp.toPx(), center = Offset(hour.centerX, hour.temperatureY))
         }
     }
 }
@@ -138,5 +138,3 @@ internal fun hourlyAccessibilityDescription(
 
 internal fun windArrowRotation(degrees: Int): Float =
     ((Math.floorMod(degrees, 360) + 180) % 360).toFloat()
-
-private val PRECIPITATION_COLOR = Color(0xFF66D7EE)

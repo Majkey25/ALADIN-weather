@@ -1,0 +1,4 @@
+Jemnější gradienty počasí, obrysové ikony a přehlednější hodinová předpověď.
+Samostatná světlá/tmavá témata, vlastní HEX barvy, písmo a velikost textu.
+Každý den/hodina ukazuje spolehlivost předpovědi. Podrobnosti vysvětlují shodu modelů a omezení. Jde o odhad, ne pravděpodobnost přesnosti.
+Widgety ve stylu aplikace a ovládání radaru respektují vzhled.

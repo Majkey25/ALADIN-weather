@@ -57,6 +57,7 @@ internal fun blendModelForecast(
     val sourceIndices = (0 until sourceTimes.length()).associateBy { sourceTimes.getString(it) }
     val targetTimes = target.getJSONArray("time")
     target.put(PRECIPITATION_SPREAD_KEY, JSONArray(List(targetTimes.length()) { JSONObject.NULL }))
+    target.put(MODEL_AGREEMENT_KEY, JSONArray(List(targetTimes.length()) { JSONObject.NULL }))
     val currentTargetIndex = currentIndex(root, targetTimes)
     val region = location?.let(::forecastRegionFor)
     // Open-Meteo writes every ISO timestamp using this response offset, not device timezone rules.
@@ -84,7 +85,11 @@ internal fun blendModelForecast(
     val precipitationBlendedIndices = mutableSetOf<Int>()
     for (targetIndex in 0 until targetTimes.length()) {
         val sourceIndex = sourceIndices[targetTimes.getString(targetIndex)] ?: continue
+        modelAgreement(source, suffixes, sourceIndex)?.let {
+            target.getJSONArray(MODEL_AGREEMENT_KEY).put(targetIndex, it.toJson())
+        }
         val localTime = LocalDateTime.parse(targetTimes.getString(targetIndex))
+        var calibratedThisHour = false
         // Legacy responses without an offset cannot disambiguate daylight-saving transitions.
         val validTime = zone?.takeIf { it.rules.getValidOffsets(localTime).size == 1 }
             ?.let { localTime.atZone(it).toInstant() }
@@ -105,6 +110,7 @@ internal fun blendModelForecast(
                 target.getJSONArray(field).put(targetIndex, value)
                 blendedAny = true
                 if (calibrated != null) {
+                    calibratedThisHour = true
                     calibratedValueCount++
                     if (firstCalibration == null) {
                         firstCalibration = calibrated
@@ -114,6 +120,8 @@ internal fun blendModelForecast(
                 }
             }
         }
+        // Static calibrated values have a different run contract from the live comparison inputs.
+        if (calibratedThisHour) target.getJSONArray(MODEL_AGREEMENT_KEY).put(targetIndex, JSONObject.NULL)
         if (blendPrecipitation(source, target, suffixes, sourceIndex, targetIndex)) {
             precipitationBlendedIndices.add(targetIndex)
             blendedAny = true
@@ -182,6 +190,34 @@ private fun currentTemperatureContributors(
             ?.let { value -> isValidModelValue("temperature_2m", value) } == true
     }
 }
+
+private fun modelAgreement(source: JSONObject, suffixes: List<String>, index: Int): HourlyModelAgreement? {
+    val rows = suffixes.mapNotNull { suffix ->
+        fun value(field: String) = source.optJSONArray("${field}_$suffix").numberOrNull(index)
+            ?.takeIf { isValidModelValue(field, it) }
+        val temperature = value("temperature_2m") ?: return@mapNotNull null
+        val wind = value("wind_speed_10m")?.takeIf { it >= 0 } ?: return@mapNotNull null
+        val direction = value("wind_direction_10m")?.takeIf { it in 0.0..360.0 } ?: return@mapNotNull null
+        val cloud = value("cloud_cover") ?: return@mapNotNull null
+        val code = value("weather_code")?.toInt() ?: return@mapNotNull null
+        val precipitation = value("precipitation") ?: return@mapNotNull null
+        val angle = Math.toRadians(direction)
+        AgreementInput(temperature, wind * sin(angle), wind * cos(angle), cloud, conditionFor(code).kind, precipitation)
+    }
+    if (rows.size !in MINIMUM_MODELS..MAX_FORECAST_MODEL_IDS) return null
+    // Do not describe only a complete subset while partial inputs still affect the displayed blend.
+    if (listOf("temperature_2m", "wind_speed_10m", "wind_direction_10m", "cloud_cover", "weather_code", "precipitation")
+        .any { modelValues(source, suffixes, it, index).size != rows.size }) return null
+    val conditions = rows.groupingBy { it.condition }.eachCount()
+    val dominant = conditions.entries.sortedBy { it.key.ordinal }.maxBy { it.value }
+    return HourlyModelAgreement(rows.size, rows.maxOf { it.temperature } - rows.minOf { it.temperature },
+        hypot(rows.maxOf { it.eastWind } - rows.minOf { it.eastWind }, rows.maxOf { it.northWind } - rows.minOf { it.northWind }),
+        rows.maxOf { it.cloud } - rows.minOf { it.cloud },
+        dominant.value, rows.count { it.precipitation > 0 }, rows.minOf { it.precipitation }, rows.maxOf { it.precipitation }, dominant.key)
+}
+
+private data class AgreementInput(val temperature: Double, val eastWind: Double, val northWind: Double,
+    val cloud: Double, val condition: WeatherKind, val precipitation: Double)
 
 private fun blendPrecipitation(
     source: JSONObject,

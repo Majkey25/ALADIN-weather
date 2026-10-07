@@ -20,6 +20,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -27,11 +29,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -43,8 +48,20 @@ import cz.majkey.pocasicesko.BuildConfig
 import cz.majkey.pocasicesko.R
 import cz.majkey.pocasicesko.locale.normalizeLanguageTag
 import java.net.URLEncoder
+import java.util.Locale
+import org.json.JSONObject
+import kotlin.math.roundToInt
 
 const val RADAR_APP_URL = "https://appassets.androidplatform.net/assets/radar.html"
+
+internal fun radarAppearanceScript(colors: ColorScheme): String {
+    fun hex(color: Color) = String.format(Locale.ROOT, "#%06X", color.toArgb() and 0xFFFFFF)
+    val values = JSONObject().put("bg", hex(colors.background)).put("surface", hex(colors.surface))
+        .put("text", hex(colors.onSurface)).put("muted", hex(colors.onSurfaceVariant))
+        .put("border", hex(colors.outlineVariant)).put("accent", hex(colors.primary))
+        .put("onAccent", hex(colors.onPrimary)).put("variant", hex(colors.surfaceVariant))
+    return "window.setAppearance && window.setAppearance($values);"
+}
 
 internal fun localizedRadarUrl(
     languageTag: String?,
@@ -74,11 +91,13 @@ fun ChmiWebScreen(
     var webView by remember { mutableStateOf<WebView?>(null) }
     var loading by remember(url) { mutableStateOf(true) }
     var error by remember(url) { mutableStateOf<String?>(null) }
+    val appearanceScript by rememberUpdatedState(radarAppearanceScript(MaterialTheme.colorScheme))
+    val textZoom = (LocalDensity.current.fontScale * 100).roundToInt().coerceIn(90, 250)
 
     Box(
         modifier = modifier
             .fillMaxSize()
-            .background(Color(0xFF071018)),
+            .background(MaterialTheme.colorScheme.surface),
     ) {
         key(url) {
             AndroidView(
@@ -119,6 +138,7 @@ fun ChmiWebScreen(
                             }
 
                             override fun onPageFinished(view: WebView?, pageUrl: String?) {
+                                view?.evaluateJavascript(appearanceScript, null)
                                 loading = false
                             }
 
@@ -159,6 +179,8 @@ fun ChmiWebScreen(
                     view.destroy()
                 },
                 update = { view ->
+                    view.settings.textZoom = textZoom
+                    view.evaluateJavascript(appearanceScript, null)
                     view.visibility = if (active) View.VISIBLE else View.INVISIBLE
                     if (active && lifecycleState.isAtLeast(Lifecycle.State.RESUMED)) {
                         view.onResume()
@@ -174,7 +196,7 @@ fun ChmiWebScreen(
                 modifier = Modifier
                     .align(Alignment.Center)
                     .size(36.dp),
-                color = Color(0xFF6DD3EA),
+                color = MaterialTheme.colorScheme.primary,
             )
         }
         error?.let { message ->
@@ -184,7 +206,7 @@ fun ChmiWebScreen(
                     .padding(28.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                Text(text = message, color = Color(0xFFFFB4AB))
+                Text(text = message, color = MaterialTheme.colorScheme.error)
                 TextButton(onClick = {
                     error = null
                     webView?.reload()

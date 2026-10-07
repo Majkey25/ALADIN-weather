@@ -385,7 +385,8 @@ fun WeatherApp(
     }
 
     val snapshot = (state as? WeatherUiState.Content)?.snapshot
-    WeatherTheme(appearance = appearance) {
+    WeatherTheme(config = appearance, kind = snapshot?.current?.let { conditionFor(it.weatherCode, it.isDay).kind },
+        isDay = snapshot?.current?.isDay ?: true) {
         if (showBackgroundDisclosure) AlertDialog(
             onDismissRequest = { acceptBackgroundChoice(false) },
             title = { Text(stringResource(R.string.notification_background_consent_title)) },
@@ -402,7 +403,7 @@ fun WeatherApp(
             WeatherBackdrop(snapshot = snapshot, appearance = appearance)
             Scaffold(
                 containerColor = Color.Transparent,
-                contentColor = Color.White,
+                contentColor = MaterialTheme.colorScheme.onBackground,
             ) { padding ->
                 HorizontalPager(
                     state = pagerState,
@@ -452,7 +453,7 @@ fun WeatherApp(
                         )
                     } else if (state == WeatherUiState.Loading) {
                         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                            CircularProgressIndicator(color = Color.White)
+                            CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
                         }
                     } else ErrorState(
                         message = stringResource(R.string.forecast_unavailable),
@@ -659,7 +660,7 @@ private fun WeatherDestination(
                 .padding(padding),
             contentAlignment = Alignment.Center,
         ) {
-            CircularProgressIndicator(color = Color.White)
+            CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
         }
 
         is WeatherUiState.Error -> ErrorState(
@@ -753,10 +754,10 @@ private fun NavigationItem(
         modifier = modifier
             .fillMaxSize()
             .semantics { contentDescription = label; this.selected = selected },
-        color = if (selected) Color(0xFF2E6474) else Color(0xFF142731),
-        contentColor = Color.White,
+        color = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface,
+        contentColor = if (selected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface,
         shape = RoundedCornerShape(28.dp),
-        border = BorderStroke(1.dp, Color.White.copy(alpha = if (selected) 0.18f else 0.10f)),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
     ) {
         Row(
             modifier = Modifier.padding(horizontal = 12.dp),
@@ -774,12 +775,9 @@ private fun NavigationItem(
 }
 
 @Composable
-private fun WeatherBackdrop(snapshot: WeatherSnapshot?, appearance: AppAppearance) {
-    val palette = appearancePalette(
-        appearance,
-        snapshot?.current?.let { conditionFor(it.weatherCode, it.isDay).kind },
-        snapshot?.current?.isDay ?: true,
-    )
+private fun WeatherBackdrop(snapshot: WeatherSnapshot?, appearance: AppearanceConfig) {
+    val rendered = LocalWeatherAppearance.current
+    val palette = rendered.palette
     Canvas(Modifier.fillMaxSize()) {
         drawRect(brush = Brush.verticalGradient(palette.background))
         drawCircle(
@@ -800,7 +798,7 @@ private fun WeatherBackdrop(snapshot: WeatherSnapshot?, appearance: AppAppearanc
             radius = size.width * 0.7f,
             center = Offset(size.width * 0.9f, size.height * 0.38f),
         )
-        if (appearance == AppAppearance.WEATHER && snapshot?.current?.isDay == false) {
+        if (appearance.theme(rendered.dark) == AppAppearance.WEATHER && rendered.dark && snapshot?.current?.isDay == false) {
             NIGHT_STARS.forEach { star ->
                 drawCircle(
                     color = Color.White.copy(alpha = star.third),
@@ -833,7 +831,7 @@ private fun ErrorState(
         Spacer(Modifier.height(18.dp))
         Text(stringResource(R.string.forecast_unavailable), fontSize = 22.sp, fontWeight = FontWeight.SemiBold)
         Spacer(Modifier.height(8.dp))
-        Text(message, color = Color.White.copy(alpha = 0.7f), textAlign = TextAlign.Center)
+        Text(message, color = MaterialTheme.colorScheme.onSurfaceVariant, textAlign = TextAlign.Center)
         Spacer(Modifier.height(14.dp))
         Row {
             TextButton(onClick = onSettings) { Text(stringResource(R.string.settings)) }
@@ -979,8 +977,8 @@ private fun LocationSearchSheet(
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
-        containerColor = Color(0xFF101820),
-        contentColor = Color.White,
+        containerColor = MaterialTheme.colorScheme.surface,
+        contentColor = MaterialTheme.colorScheme.onSurface,
         sheetState = sheetState,
     ) {
         if (pickingPoint) {
@@ -1006,28 +1004,28 @@ private fun LocationSearchSheet(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable(onClick = ::requestDeviceLocation),
-                color = Color(0xFF1A2A34),
+                color = MaterialTheme.colorScheme.surfaceVariant,
                 shape = RoundedCornerShape(20.dp),
-                border = BorderStroke(1.dp, Color.White.copy(alpha = 0.09f)),
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
             ) {
                 Row(
                     modifier = Modifier.padding(horizontal = 15.dp, vertical = 13.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    Icon(Icons.Rounded.MyLocation, contentDescription = null, tint = Color(0xFF83D6E8))
+                    Icon(Icons.Rounded.MyLocation, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
                     Spacer(Modifier.width(12.dp))
                     Column(Modifier.weight(1f)) {
                         Text(stringResource(R.string.use_my_location), fontWeight = FontWeight.SemiBold)
                         Text(
                             stringResource(R.string.location_purpose),
-                            color = Color.White.copy(alpha = 0.52f),
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                             fontSize = 12.sp,
                         )
                     }
                     if (locating) {
                         CircularProgressIndicator(
                             modifier = Modifier.size(22.dp),
-                            color = Color(0xFF83D6E8),
+                            color = MaterialTheme.colorScheme.primary,
                             strokeWidth = 2.dp,
                         )
                     }
@@ -1042,21 +1040,21 @@ private fun LocationSearchSheet(
                         pinnedSaveError = null
                         pickingPoint = true
                     },
-                color = Color(0xFF1A2A34),
+                color = MaterialTheme.colorScheme.surfaceVariant,
                 shape = RoundedCornerShape(20.dp),
-                border = BorderStroke(1.dp, Color.White.copy(alpha = 0.09f)),
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
             ) {
                 Row(
                     modifier = Modifier.padding(horizontal = 15.dp, vertical = 13.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    Icon(Icons.Rounded.Map, contentDescription = null, tint = Color(0xFF83D6E8))
+                    Icon(Icons.Rounded.Map, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
                     Spacer(Modifier.width(12.dp))
                     Column {
                         Text(stringResource(R.string.choose_point_on_map), fontWeight = FontWeight.SemiBold)
                         Text(
                             stringResource(R.string.pinned_location_purpose),
-                            color = Color.White.copy(alpha = 0.52f),
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                             fontSize = 12.sp,
                         )
                     }
@@ -1070,7 +1068,7 @@ private fun LocationSearchSheet(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Column(Modifier.weight(1f)) {
-                    Text(stringResource(R.string.current_location), color = Color.White.copy(alpha = 0.5f), fontSize = 12.sp)
+                    Text(stringResource(R.string.current_location), color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
                     Text(selectedLocation.name, fontWeight = FontWeight.SemiBold)
                 }
                 IconButton(onClick = { toggleFavorite(selectedLocation) }) {
@@ -1081,7 +1079,7 @@ private fun LocationSearchSheet(
                             Icons.Rounded.StarBorder
                         },
                         contentDescription = stringResource(R.string.toggle_favorite),
-                        tint = Color(0xFFFFC766),
+                        tint = MaterialTheme.colorScheme.primary,
                     )
                 }
             }
@@ -1090,7 +1088,7 @@ private fun LocationSearchSheet(
                 Text(
                     stringResource(R.string.favorites),
                     modifier = Modifier.padding(top = 8.dp, bottom = 4.dp),
-                    color = Color.White.copy(alpha = 0.58f),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     fontSize = 12.sp,
                     fontWeight = FontWeight.SemiBold,
                 )
@@ -1107,7 +1105,7 @@ private fun LocationSearchSheet(
             Text(
                 searchWorldwide,
                 modifier = Modifier.padding(top = 14.dp, bottom = 8.dp),
-                color = Color.White.copy(alpha = 0.58f),
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 fontSize = 12.sp,
                 fontWeight = FontWeight.SemiBold,
             )
@@ -1129,7 +1127,7 @@ private fun LocationSearchSheet(
                     modifier = Modifier
                         .align(Alignment.CenterHorizontally)
                         .size(28.dp),
-                    color = Color.White,
+                    color = MaterialTheme.colorScheme.onSurface,
                     strokeWidth = 2.dp,
                 )
             }
@@ -1152,7 +1150,7 @@ private fun LocationSearchSheet(
             if (!searching && error == null && query.trim().length >= 2 && results.isEmpty()) {
                 Text(
                     stringResource(R.string.no_czech_result),
-                    color = Color.White.copy(alpha = 0.68f),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(vertical = 14.dp),
                 )
             }
@@ -1180,7 +1178,7 @@ private fun LocationRow(
                     contentDescription = stringResource(
                         if (favorite) R.string.remove_favorite else R.string.add_favorite,
                     ),
-                    tint = Color(0xFFFFC766),
+                    tint = MaterialTheme.colorScheme.primary,
                 )
             }
         },
@@ -1201,7 +1199,7 @@ private fun Context.locationPermissionPermanentlyDenied(): Boolean {
     return LOCATION_PERMISSIONS.none(activity::shouldShowRequestPermissionRationale)
 }
 
-private fun Context.findActivity(): Activity? = when (this) {
+internal fun Context.findActivity(): Activity? = when (this) {
     is Activity -> this
     is ContextWrapper -> baseContext.findActivity()
     else -> null

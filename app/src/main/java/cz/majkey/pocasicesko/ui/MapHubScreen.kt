@@ -92,9 +92,9 @@ internal fun MapHubScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f),
-            color = Color(0xFF0B1117),
+            color = MaterialTheme.colorScheme.surface,
             shape = RoundedCornerShape(if (fullscreen) 0.dp else 18.dp),
-            border = if (fullscreen) null else BorderStroke(1.dp, Color.White.copy(alpha = 0.1f)),
+            border = if (fullscreen) null else BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
         ) {
             ChmiWebScreen(
                 localizedRadarUrl(

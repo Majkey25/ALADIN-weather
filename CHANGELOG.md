@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.0] - 2026-10-07
+
+- Redesign the forecast with softer light/dark weather gradients, outlined weather icons and a compact hourly chart. Keep radar controls, details and app-style widgets consistent with the selected theme.
+- Add System, Light and Dark appearance modes, independent light/dark presets, AMOLED, custom hex colours, font styles, text size and corner controls. Block custom palettes with unreadable text.
+- Show confidence for each forecast day and hour. Tap an hour for details; tap its confidence chip for the compared model ranges and limitations.
+- Base confidence on complete hourly model inputs, temperature/wind/cloud/rain disagreement, forecast lead time and download age. Missing or partial inputs remain explicit. This is an agreement estimate, not a validated accuracy probability; forecast values and calibration gates are unchanged.
+
 ## [0.4.4] - 2026-10-05
 
 - Fetch the three nearest ČHMÚ station observations concurrently, retaining their selected order, per-source fallback and timeouts.

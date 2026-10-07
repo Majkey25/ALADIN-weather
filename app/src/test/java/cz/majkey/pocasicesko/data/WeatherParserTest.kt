@@ -9,6 +9,17 @@ import org.junit.Test
 
 class WeatherParserTest {
     @Test
+    fun modelAgreementStaysAlignedWhenIncompleteHoursAreSkipped() {
+        val root = JSONObject(VALID_FORECAST)
+        val evidence = HourlyModelAgreement(5, 1.0, 2.0, 10.0, 5, 0, 0.0, 0.0, WeatherKind.CLEAR)
+        root.getJSONObject("hourly").put(MODEL_AGREEMENT_KEY,
+            org.json.JSONArray().put(evidence.toJson()).put(evidence.copy(modelCount = 7).toJson()))
+        root.getJSONObject("hourly").getJSONArray("temperature_2m").put(0, JSONObject.NULL)
+        val parsed = WeatherParser.parseForecast(root.toString(), 123L)
+        assertEquals("2026-08-24T13:00", parsed.hourly.single().time)
+        assertEquals(7, parsed.hourly.single().modelAgreement?.modelCount)
+    }
+    @Test
     fun missingDailyRainChanceDoesNotDiscardCurrentAndHourlyForecasts() {
         val complete = WeatherParser.parseForecast(VALID_FORECAST, 123L)
         val root = JSONObject(VALID_FORECAST)

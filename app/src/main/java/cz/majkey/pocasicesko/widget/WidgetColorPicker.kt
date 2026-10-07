@@ -38,7 +38,7 @@ import java.util.Locale
 import kotlin.math.roundToInt
 
 @Composable
-internal fun ColorInput(value: String, label: String, onValueChange: (String) -> Unit) {
+internal fun ColorInput(value: String, label: String, opaqueOnly: Boolean = false, onValueChange: (String) -> Unit) {
     var showPicker by rememberSaveable { mutableStateOf(false) }
     val description = stringResource(R.string.widget_choose_color, label)
     OutlinedTextField(
@@ -50,12 +50,13 @@ internal fun ColorInput(value: String, label: String, onValueChange: (String) ->
                 ColorSwatch(value)
             }
         },
-        isError = !isWidgetColor(value),
-        supportingText = { Text(stringResource(if (isWidgetColor(value)) R.string.widget_hex_format else R.string.widget_invalid_hex)) },
+        isError = !isWidgetColor(value) || opaqueOnly && widgetArgbOrNull(value)?.ushr(24) != 255,
+        supportingText = { Text(if (opaqueOnly && isWidgetColor(value)) "#RRGGBB · 100%"
+            else stringResource(if (isWidgetColor(value)) R.string.widget_hex_format else R.string.widget_invalid_hex)) },
         singleLine = true,
         modifier = Modifier.fillMaxWidth(),
     )
-    if (showPicker) WidgetColorDialog(value, label, onDismiss = { showPicker = false }) {
+    if (showPicker) WidgetColorDialog(value, label, opaqueOnly, onDismiss = { showPicker = false }) {
         onValueChange(it)
         showPicker = false
     }
@@ -70,7 +71,7 @@ private fun ColorSwatch(value: String) {
 }
 
 @Composable
-private fun WidgetColorDialog(value: String, label: String, onDismiss: () -> Unit, onConfirm: (String) -> Unit) {
+private fun WidgetColorDialog(value: String, label: String, opaqueOnly: Boolean, onDismiss: () -> Unit, onConfirm: (String) -> Unit) {
     var draft by rememberSaveable { mutableStateOf(widgetHexOrNull(value) ?: "#FFFFFFFF") }
     val argb = widgetArgbOrNull(draft) ?: widgetArgbOrNull(value) ?: -1
     AlertDialog(
@@ -84,8 +85,8 @@ private fun WidgetColorDialog(value: String, label: String, onDismiss: () -> Uni
                     onValueChange = { draft = widgetColorInput(it) },
                     label = { Text("HEX") },
                     leadingIcon = { ColorSwatch(draft) },
-                    supportingText = { Text(stringResource(R.string.widget_hex_format)) },
-                    isError = !isWidgetColor(draft), singleLine = true,
+                    supportingText = { Text(if (opaqueOnly) "#RRGGBB · 100%" else stringResource(R.string.widget_hex_format)) },
+                    isError = !isWidgetColor(draft) || opaqueOnly && widgetArgbOrNull(draft)?.ushr(24) != 255, singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
                 )
                 FlowRow(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
@@ -95,7 +96,8 @@ private fun WidgetColorDialog(value: String, label: String, onDismiss: () -> Uni
                         }
                     }
                 }
-                listOf(R.string.widget_red to 16, R.string.widget_green to 8, R.string.widget_blue to 0, R.string.widget_alpha to 24).forEach { (resource, shift) ->
+                listOf(R.string.widget_red to 16, R.string.widget_green to 8, R.string.widget_blue to 0, R.string.widget_alpha to 24)
+                    .filter { !opaqueOnly || it.second != 24 }.forEach { (resource, shift) ->
                     val channelLabel = stringResource(resource)
                     val channel = (argb ushr shift) and 255
                     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
@@ -111,7 +113,8 @@ private fun WidgetColorDialog(value: String, label: String, onDismiss: () -> Uni
                 }
             }
         },
-        confirmButton = { TextButton(enabled = isWidgetColor(draft), onClick = { onConfirm(requireNotNull(widgetHexOrNull(draft))) }) { Text(stringResource(android.R.string.ok)) } },
+        confirmButton = { TextButton(enabled = isWidgetColor(draft) && (!opaqueOnly || widgetArgbOrNull(draft)?.ushr(24) == 255),
+            onClick = { onConfirm(requireNotNull(widgetHexOrNull(draft))) }) { Text(stringResource(android.R.string.ok)) } },
         dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(android.R.string.cancel)) } },
     )
 }

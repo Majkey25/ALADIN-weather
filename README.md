@@ -37,6 +37,7 @@
 - Uses nearby ČHMÚ stations in Czechia and METAR reports worldwide for available current measurements. Point-weather corrections require reports within 10 km and 30 minutes; nearby weather can still differ from the selected point. Ten-minute station totals do not replace model precipitation amounts or hourly forecasts.
 - Preserves explicit drizzle reports, does not infer clear skies from sunshine duration, and distinguishes total cloud observations from partial-height airport reports. METAR observations never invent a precipitation amount.
 - Expanded hourly details show the number of models with nonzero precipitation totals and their amount range. These are descriptive model counts, not a calibrated probability.
+- Each forecast day and hour shows High, Medium, Low, or Limited confidence. The estimate uses complete model-input agreement, lead time and download age. Tap a confidence chip for the ranges and limits. It is not a probability of accuracy, and missing inputs stay explicit.
 - Keeps the last successful forecast for offline display.
 - Includes a resizable launcher widget with per-widget colours, transparency, gradient or custom-image backgrounds, text scale, alignment, custom label, and selectable weather fields.
 - Supports Metric and Imperial display units in the app and widgets.
@@ -77,7 +78,7 @@ Selia Weather supports Android 10 and later. It follows the Android system langu
 
 Settings groups language, units, notifications, official warnings, appearance, widgets, and support into separate menus. Swipe left through Weather, Radar, and Ask AI, or right to return. On Radar, swipe the header to change tabs. Drags on the map pan the map, and fullscreen keeps all gestures in Radar.
 
-Appearance can follow the weather, use a fixed Ocean, Sunset, or Forest gradient, or use the flat Material and Minimal styles. The weather option uses warm colours in sunshine, blue under clouds, and darker colours at night.
+Appearance follows System, Light, or Dark mode, with independent theme choices for light and dark. Choose weather-reactive colours, fixed gradients, Material, Minimal, AMOLED, or a custom HEX palette. Native Material You colours are available on Android 12+. Font style, text size and corner radius are adjustable; custom colours require readable contrast. App-style widgets and radar controls follow the choice.
 
 The public application ID is `com.majkeylab.weatheraladin`. A network connection is required for fresh forecasts, search, and radar. Build locally with JDK 17 and Android SDK 36.
 

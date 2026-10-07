@@ -1,0 +1,4 @@
+Sanftere Wetterverläufe, Kontursymbole und eine klarere stündliche Vorhersage.
+Separate helle/dunkle Themen, eigene HEX-Farben, Schrift und Textgröße.
+Jeder Tag/jede Stunde zeigt die Vorhersagezuverlässigkeit. Details erklären Modellübereinstimmung und Grenzen. Eine Schätzung, keine Genauigkeitswahrscheinlichkeit.
+Widgets im App-Stil und Radarsteuerung übernehmen das Erscheinungsbild.

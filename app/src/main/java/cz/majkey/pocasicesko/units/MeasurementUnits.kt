@@ -36,6 +36,11 @@ class WeatherUnitFormatter(
 ) {
     fun temperature(celsius: Double): String = "${temperatureValue(celsius).roundToInt()}°"
 
+    fun temperatureDifference(celsius: Double): String = when (system) {
+        MeasurementSystem.METRIC -> String.format(locale, "%.1f°C", celsius)
+        MeasurementSystem.IMPERIAL -> String.format(locale, "%.1f°F", celsius * 9.0 / 5.0)
+    }
+
     fun windSpeed(kilometresPerHour: Double): String = when (system) {
         MeasurementSystem.METRIC -> "${kilometresPerHour.roundToInt()} km/h"
         MeasurementSystem.IMPERIAL -> "${(kilometresPerHour * KILOMETRES_TO_MILES).roundToInt()} mph"

@@ -14,6 +14,7 @@ import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material.icons.rounded.ExpandLess
 import androidx.compose.material.icons.rounded.ExpandMore
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -348,16 +349,16 @@ internal fun ExpandedHourDetails(
                 hourlyStartingPrecipitationInterval(hour.time, locale) ?: stringResource(R.string.unavailable)),
             fontSize = 12.sp,
             fontWeight = FontWeight.Medium,
-            color = Color(0xFFB9ECF5),
+            color = MaterialTheme.colorScheme.secondary,
         )
         Surface(
             modifier = Modifier.fillMaxWidth(),
-            color = Color(0x1A6DD3EA),
-            shape = RoundedCornerShape(16.dp),
+            color = MaterialTheme.colorScheme.surfaceVariant,
+            shape = MaterialTheme.shapes.medium,
         ) {
             Text(
                 text = hourlyWeatherSummary(hour, units, precipitationHour, locale, resources::getString),
-                color = Color(0xFFB9ECF5),
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 fontSize = 12.sp,
                 lineHeight = 18.sp,
                 fontWeight = FontWeight.Medium,
@@ -379,14 +380,14 @@ internal fun ExpandedHourDetails(
                 Text(
                     stringResource(R.string.hourly_precipitation_models, spread.wetModelCount,
                         spread.modelCount, if (minimum == maximum) minimum else "$minimum – $maximum"),
-                    color = Color.White.copy(alpha = 0.82f),
+                    color = MaterialTheme.colorScheme.onSurface,
                     fontSize = 12.sp,
                     lineHeight = 18.sp,
                 )
             }
             Text(
                 stringResource(R.string.precipitation_probability_note),
-                color = Color.White.copy(alpha = 0.7f),
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 fontSize = 11.sp,
                 lineHeight = 16.sp,
             )
@@ -498,13 +499,13 @@ private fun HourMetricValue(metric: HourMetric, modifier: Modifier) {
     Column(modifier.padding(vertical = 2.dp)) {
         Text(
             text = metric.label,
-            color = Color.White.copy(alpha = 0.7f),
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
             fontSize = 10.sp,
             lineHeight = 14.sp,
         )
         Text(
             text = metric.value,
-            color = Color.White.copy(alpha = 0.88f),
+            color = MaterialTheme.colorScheme.onSurface,
             fontSize = 13.sp,
             lineHeight = 18.sp,
             fontWeight = FontWeight.Medium,

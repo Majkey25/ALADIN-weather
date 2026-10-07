@@ -1,6 +1,7 @@
 package cz.majkey.pocasicesko.ui
 
 import androidx.compose.foundation.Canvas
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -14,6 +15,7 @@ import kotlin.math.min
 
 @Composable
 internal fun MoonPhaseCanvas(details: MoonDetails, modifier: Modifier = Modifier) {
+    val outline = MaterialTheme.colorScheme.outline
     Canvas(modifier) {
         val radius = min(size.width, size.height) / 2f - 3f
         val center = Offset(size.width / 2f, size.height / 2f)
@@ -51,7 +53,7 @@ internal fun MoonPhaseCanvas(details: MoonDetails, modifier: Modifier = Modifier
             drawPath(light, Color(0xFFF4F1DF))
         }
         drawCircle(
-            Color.White.copy(alpha = 0.32f),
+            outline,
             radius,
             center,
             style = Stroke(width = 2f),

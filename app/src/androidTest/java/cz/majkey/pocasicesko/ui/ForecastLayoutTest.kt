@@ -21,6 +21,9 @@ import androidx.compose.ui.test.click
 import androidx.compose.ui.test.isDialog
 import androidx.compose.ui.test.hasClickAction
 import androidx.compose.ui.test.hasText
+import androidx.compose.ui.test.hasScrollToNodeAction
+import androidx.compose.ui.test.performScrollToNode
+import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.swipeLeft
 import androidx.compose.ui.test.swipeRight
 import androidx.compose.ui.test.performScrollTo
@@ -58,7 +61,7 @@ class ForecastLayoutTest {
 
     @Test
     fun notificationCategoriesToggleIndependentlyAndShowSystemBlocking() {
-        val settings = mutableStateOf(WeatherAlertSettings())
+        val settings = mutableStateOf(WeatherAlertSettings(backgroundAlertsAllowed = true))
         var openedChannel: String? = null
         var permissionRequests = 0
         compose.setContent {
@@ -74,7 +77,8 @@ class ForecastLayoutTest {
         compose.onNodeWithText(context.getString(R.string.notification_enable)).performTouchInput { click() }
         assertEquals(1, permissionRequests)
         val rainLabel = context.getString(WeatherAlertCategory.RAIN.labelResource)
-        compose.onNodeWithText(rainLabel).performScrollTo().performTouchInput { click() }
+        compose.onNode(hasScrollToNodeAction()).performScrollToNode(hasText(rainLabel))
+        compose.onNode(hasText(rainLabel) and hasClickAction()).performScrollTo().performClick()
         compose.onNodeWithText(context.getString(R.string.notification_channel_blocked), substring = true)
             .performScrollTo().assertIsDisplayed()
         compose.onNodeWithContentDescription(context.getString(R.string.notification_channel_settings, rainLabel))
@@ -85,9 +89,11 @@ class ForecastLayoutTest {
         assertFalse(settings.value.rainEnabled)
         assertTrue(settings.value.officialWarningsEnabled)
         compose.onNodeWithContentDescription(context.getString(R.string.back)).performTouchInput { click() }
-        compose.onNodeWithText(context.getString(R.string.settings_temperature_alerts)).performScrollTo().performTouchInput { click() }
+        compose.onNode(hasScrollToNodeAction()).performScrollToNode(hasText(context.getString(R.string.settings_temperature_alerts)))
+        compose.onNode(hasText(context.getString(R.string.settings_temperature_alerts)) and hasClickAction()).performClick()
         val coldLabel = context.getString(WeatherAlertCategory.COLD.labelResource)
-        compose.onNodeWithText(coldLabel).performScrollTo().performTouchInput { click() }
+        compose.onNode(hasScrollToNodeAction()).performScrollToNode(hasText(coldLabel))
+        compose.onNode(hasText(coldLabel) and hasClickAction()).performScrollTo().performClick()
         assertTrue(settings.value.coldEnabled)
         compose.onNodeWithText(context.getString(R.string.notification_at_or_below, units.temperature(5.0)))
             .performScrollTo().assertIsDisplayed()

@@ -1,0 +1,4 @@
+Softer weather gradients, outlined icons and a cleaner hourly forecast.
+Choose separate light/dark themes, custom hex colours, fonts and text size.
+Each day/hour shows forecast confidence. Open its details to see model agreement and limitations. Confidence is an estimate, not a probability of accuracy.
+App-style widgets and radar controls follow your appearance.

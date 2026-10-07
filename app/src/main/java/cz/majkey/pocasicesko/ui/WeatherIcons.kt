@@ -1,13 +1,13 @@
 package cz.majkey.pocasicesko.ui
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.AcUnit
-import androidx.compose.material.icons.rounded.Bolt
-import androidx.compose.material.icons.rounded.Cloud
-import androidx.compose.material.icons.rounded.DarkMode
-import androidx.compose.material.icons.rounded.Dehaze
-import androidx.compose.material.icons.rounded.WaterDrop
-import androidx.compose.material.icons.rounded.WbSunny
+import androidx.compose.material.icons.outlined.AcUnit
+import androidx.compose.material.icons.outlined.Bolt
+import androidx.compose.material.icons.outlined.Cloud
+import androidx.compose.material.icons.outlined.DarkMode
+import androidx.compose.material.icons.outlined.Dehaze
+import androidx.compose.material.icons.outlined.WaterDrop
+import androidx.compose.material.icons.outlined.WbSunny
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.foundation.layout.Box
@@ -29,9 +29,11 @@ fun WeatherIcon(
 ) {
     if (kind == WeatherKind.MAINLY_CLEAR || kind == WeatherKind.PARTLY_CLOUDY) {
         val cloudFraction = compositeCloudFraction(kind)
-        val cloudTint = compositeCloudTint(kind, tint)
+        val dark = LocalWeatherAppearance.current.dark
+        val cloudTint = if (dark) compositeCloudTint(kind, tint) else Color(0xFF477B9C)
         val sunOrMoonFraction = if (kind == WeatherKind.MAINLY_CLEAR) 0.84f else 0.78f
-        val sunOrMoonTint = if (isDay) Color(0xFFFFD477) else Color(0xFFDDE6FF)
+        val sunOrMoonTint = if (isDay) { if (dark) Color(0xFFFFD477) else Color(0xFFA06416) }
+            else if (dark) Color(0xFFDDE6FF) else Color(0xFF6569A3)
         Box(
             if (contentDescription == null) {
                 modifier
@@ -40,13 +42,13 @@ fun WeatherIcon(
             },
         ) {
             Icon(
-                imageVector = if (isDay) Icons.Rounded.WbSunny else Icons.Rounded.DarkMode,
+                imageVector = if (isDay) Icons.Outlined.WbSunny else Icons.Outlined.DarkMode,
                 contentDescription = null,
                 modifier = Modifier.fillMaxSize(sunOrMoonFraction).align(Alignment.TopStart),
                 tint = sunOrMoonTint,
             )
             Icon(
-                imageVector = Icons.Rounded.Cloud,
+                imageVector = Icons.Outlined.Cloud,
                 contentDescription = null,
                 modifier = Modifier.fillMaxSize(cloudFraction).align(Alignment.BottomEnd),
                 tint = cloudTint,
@@ -55,15 +57,15 @@ fun WeatherIcon(
         return
     }
     val icon = when (kind) {
-        WeatherKind.CLEAR -> if (isDay) Icons.Rounded.WbSunny else Icons.Rounded.DarkMode
+        WeatherKind.CLEAR -> if (isDay) Icons.Outlined.WbSunny else Icons.Outlined.DarkMode
         WeatherKind.MAINLY_CLEAR -> error("Handled above")
         WeatherKind.PARTLY_CLOUDY -> error("Handled above")
-        WeatherKind.CLOUDY -> Icons.Rounded.Cloud
-        WeatherKind.FOG -> Icons.Rounded.Dehaze
-        WeatherKind.RAIN -> Icons.Rounded.WaterDrop
-        WeatherKind.STORM -> Icons.Rounded.Bolt
-        WeatherKind.SNOW -> Icons.Rounded.AcUnit
-        WeatherKind.UNKNOWN -> Icons.Rounded.Cloud
+        WeatherKind.CLOUDY -> Icons.Outlined.Cloud
+        WeatherKind.FOG -> Icons.Outlined.Dehaze
+        WeatherKind.RAIN -> Icons.Outlined.WaterDrop
+        WeatherKind.STORM -> Icons.Outlined.Bolt
+        WeatherKind.SNOW -> Icons.Outlined.AcUnit
+        WeatherKind.UNKNOWN -> Icons.Outlined.Cloud
     }
     Icon(
         imageVector = icon,

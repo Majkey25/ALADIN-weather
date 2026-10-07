@@ -19,6 +19,7 @@ import android.util.TypedValue
 import android.view.View
 import android.widget.RemoteViews
 import androidx.core.content.edit
+import androidx.compose.ui.graphics.toArgb
 import cz.majkey.pocasicesko.MainActivity
 import cz.majkey.pocasicesko.R
 import cz.majkey.pocasicesko.data.WeatherCondition
@@ -209,7 +210,16 @@ class WeatherWidgetProvider : AppWidgetProvider() {
                 localizedContext.resources.configuration.locales[0],
             )
             val weather = localizedContext.getSharedPreferences(WeatherRepository.PREFERENCES_NAME, Context.MODE_PRIVATE)
-            val settings = (previewSettings ?: loadSettings(localizedContext, appWidgetId)).normalized().renderedTextColors()
+            val kind = runCatching {
+                WeatherKind.valueOf(weather.getString(WeatherRepository.KEY_WIDGET_KIND, "UNKNOWN").orEmpty())
+            }.getOrDefault(WeatherKind.UNKNOWN)
+            val isDay = weather.getBoolean(WeatherRepository.KEY_WIDGET_IS_DAY, true)
+            val configured = (previewSettings ?: loadSettings(localizedContext, appWidgetId)).normalized()
+            val settings = if (configured.backgroundMode == WidgetBackgroundMode.APP_STYLE && configured.automaticTextColors && configured.opacity == 100) {
+                val colors = cz.majkey.pocasicesko.ui.renderedAppearance(context, cz.majkey.pocasicesko.ui.AppearanceSettings.load(context), kind, isDay).colors
+                configured.copy(primaryColor = String.format(java.util.Locale.ROOT, "#%08X", colors.onBackground.toArgb()),
+                    secondaryColor = String.format(java.util.Locale.ROOT, "#%08X", colors.onSurfaceVariant.toArgb()))
+            } else configured.renderedTextColors()
             val minWidth = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, COMPACT_WIDTH_DP)
             val minHeight = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT, COMPACT_HEIGHT_DP)
             val hostSize = widgetHostSize(
@@ -225,14 +235,10 @@ class WeatherWidgetProvider : AppWidgetProvider() {
             val city = weather.getString(WeatherRepository.KEY_WIDGET_CITY, null)
                 ?: localizedContext.getString(R.string.widget_placeholder_city)
             val temperature = weather.getFloat(WeatherRepository.KEY_WIDGET_TEMPERATURE, Float.NaN)
-            val kind = runCatching {
-                WeatherKind.valueOf(weather.getString(WeatherRepository.KEY_WIDGET_KIND, "UNKNOWN").orEmpty())
-            }.getOrDefault(WeatherKind.UNKNOWN)
             val condition = localizedContext.widgetConditionLabel(
                 weather.getString(WeatherRepository.KEY_WIDGET_CONDITION_KEY, null),
                 kind,
             )
-            val isDay = weather.getBoolean(WeatherRepository.KEY_WIDGET_IS_DAY, true)
             val high = weather.getFloat(WeatherRepository.KEY_WIDGET_HIGH, Float.NaN)
             val low = weather.getFloat(WeatherRepository.KEY_WIDGET_LOW, Float.NaN)
             val hourlyTimes = weather.getString(WeatherRepository.KEY_WIDGET_HOURLY_TIMES, null)
