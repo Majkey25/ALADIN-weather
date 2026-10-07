@@ -15,6 +15,8 @@ object WeatherParser {
         validateLengths(hourlyTimes, hourlyJson, *HOURLY_FIELDS)
         val precipitationSpreads = hourlyJson.optJSONArray(PRECIPITATION_SPREAD_KEY)
             ?.takeIf { it.length() == hourlyTimes.length() }
+        val modelAgreements = hourlyJson.optJSONArray(MODEL_AGREEMENT_KEY)
+            ?.takeIf { it.length() == hourlyTimes.length() }
 
         val dailyTimes = dailyJson.getJSONArray("time")
         validateLengths(
@@ -110,6 +112,7 @@ object WeatherParser {
                         ),
                         showers = hourlyJson.optionalFiniteDoubleAt("showers", index),
                         precipitationSpread = precipitationSpreads?.optJSONObject(index)?.precipitationSpreadOrNull(),
+                        modelAgreement = modelAgreements?.optJSONObject(index)?.modelAgreementOrNull(),
                     ),
                 )
             }
